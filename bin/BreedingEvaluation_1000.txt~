@@ -1,0 +1,28 @@
+Evaluation for breeding method: halfElite
+RuleBased score average 2602.6
+UniformProb score average 2629.4
+RJSProb score average 7111.2
+RSJProb score average 7121.6
+halfElite method score average 4866.2
+
+Evaluation for breeding method: quarterElite
+RuleBased score average 3777.6
+UniformProb score average 2667.2
+RJSProb score average 7026.6
+RSJProb score average 7340.8
+quarterElite method score average 5203.05
+
+Evaluation for breeding method: quarterEliteMigration
+RuleBased score average 4237.0
+UniformProb score average 2677.6
+RJSProb score average 7179.4
+RSJProb score average 7014.4
+quarterEliteMigration method score average 5277.1
+
+Evaluation for breeding method: smallElite
+RuleBased score average 4217.8
+UniformProb score average 2710.0
+RJSProb score average 7098.8
+RSJProb score average 7588.2
+smallElite method score average 5403.7
+

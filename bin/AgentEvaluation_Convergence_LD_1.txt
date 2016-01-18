@@ -1,0 +1,21 @@
+Evaluation for agent: RSJProb level difficulty: 1
+Level 1. Turn 0 converged at 481
+Level 1. Turn 1 converged at 568
+Evaluation for agent: RSJProb level difficulty: 1
+Level 1. Turn 0 converged at 42
+Level 1. Turn 1 converged at 1031
+Level 1. Turn 2 converged at 76
+Evaluation for agent: RSJProb level difficulty: 1
+Level 1. Turn 0 converged at 342
+Level 1. Turn 1 converged at 417
+Level 1. Turn 2 converged at 302
+Level 1. Turn 3 converged at 43
+Level 1. Turn 4 converged at 310
+Average Score 33942.8 Track 1
+Evaluation for agent: RSJProb level difficulty: 1
+Level 1. Turn 0 converged at 801
+Level 1. Turn 1 converged at 253
+Level 1. Turn 2 converged at 260
+Level 1. Turn 3 converged at 246
+Level 1. Turn 4 converged at 610
+Average Score 9367.6 Track 1

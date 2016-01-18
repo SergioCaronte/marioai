@@ -1,0 +1,25 @@
+Level 0. Turn 0 converged at 1
+Level 0. Turn 1 converged at 1
+Level 0. Turn 2 converged at 1
+Level 0. Turn 3 converged at 1
+Level 0. Turn 4 converged at 1
+Average Score 9508.8 Track 0
+Level 1. Turn 0 converged at 43
+Level 1. Turn 1 converged at 44
+Level 1. Turn 2 converged at 37
+Level 1. Turn 3 converged at 80
+Level 1. Turn 4 converged at 164
+Average Score 9353.8 Track 1
+Level 2. Turn 0 converged at 1196
+Level 2. Turn 1 converged at 9890
+Level 2. Turn 2 converged at 343
+Level 2. Turn 3 converged at 1479
+Level 2. Turn 4 converged at 9914
+Average Score 9433.2 Track 2
+Level 3. Turn 0 converged at 34009
+Level 3. Turn 1 converged at 113316
+Level 3. Turn 2 converged at 655753
+Level 3. Turn 3 converged at 499731
+Level 3. Turn 4 converged at 310631
+Average Score 9574.0 Track 3
+Level 4. Turn 0 converged at 218955

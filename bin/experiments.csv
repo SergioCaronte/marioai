@@ -1,0 +1,100 @@
+RuleBased; smartCross; smallElite;9428;0;10000; 1221_0710;0;Rule Based;média;variância;desvio padrão
+RuleBased; smartCross; smallElite;9190;0;10000; 1221_1430;0;Track 1;9504,8;43559,36;208,7087923
+RuleBased; smartCross; smallElite;9838;0;10000; 1221_2010;0;Track 2;6040;5684377,2;2384,193197
+RuleBased; smartCross; smallElite;9528;0;10000; 1222_0439;0;Track 3;4870,8;805456,16;897,4720943
+RuleBased; smartCross; smallElite;9540;0;10000; 1222_1056;0;Track 4;5036;2427422,8;1558,01887
+RuleBased; smartCross; smallElite;6136;1;10000; 1221_0710;0;Track 5;3494;334179,6;578,082693
+RuleBased; smartCross; smallElite;3353;1;10000; 1221_1100;0;;;;
+RuleBased; smartCross; smallElite;10216;1;10000; 1221_1340;0;Uniform;média;variância;desvio padrão
+RuleBased; smartCross; smallElite;4130;1;10000; 1221_2136;0;Track 1;4478,4;89399,44;298,9973913
+RuleBased; smartCross; smallElite;6365;1;10000; 1222_0042;0;Track 2;3433,2;69922,56;264,4287428
+RuleBased; smartCross; smallElite;5551;2;10000; 1221_0710;0;Track 3;2995,2;30971,36;175,9868177
+RuleBased; smartCross; smallElite;5841;2;10000; 1221_1144;0;Track 4;2998,6;259823,04;509,7283983
+RuleBased; smartCross; smallElite;4802;2;10000; 1221_1607;0;Track 5;3350,8;72383,76;269,0423015
+RuleBased; smartCross; smallElite;4907;2;10000; 1221_1943;0;;;;
+RuleBased; smartCross; smallElite;3253;2;10000; 1221_2254;0;Heuristic;média;variância;desvio padrão
+RuleBased; smartCross; smallElite;5156;3;10000; 1221_0710;0;Track 1;10034,4;936,64;30,60457482
+RuleBased; smartCross; smallElite;4446;3;10000; 1221_1005;0;Track 2;10088,2;5102,96;71,43500542
+RuleBased; smartCross; smallElite;4175;3;10000; 1221_1239;0;Track 3;10071;64002,8;252,9877467
+RuleBased; smartCross; smallElite;3449;3;10000; 1221_1620;0;Track 4;7841,4;402827,84;634,6871985
+RuleBased; smartCross; smallElite;7954;3;10000; 1221_1853;0;Track 5;6972,6;84308,64;290,3595013
+RuleBased; smartCross; smallElite;3727;4;10000; 1221_0710;0;;;;
+RuleBased; smartCross; smallElite;2482;4;10000; 1221_0957;0;;;;
+RuleBased; smartCross; smallElite;3244;4;10000; 1221_1155;0;;;;
+RuleBased; smartCross; smallElite;4025;4;10000; 1221_1446;0;;;;
+RuleBased; smartCross; smallElite;3992;4;10000; 1221_1722;0;;;;
+UniformProb; smartCross; smallElite;4408;0;10000; 1222_1806;0;;;;
+UniformProb; smartCross; smallElite;4252;0;10000; 1223_0227;0;;;;
+UniformProb; smartCross; smallElite;4997;0;10000; 1223_1046;0;;;;
+UniformProb; smartCross; smallElite;4588;0;10000; 1223_1853;0;;;;
+UniformProb; smartCross; smallElite;4147;0;10000; 1224_0251;0;;;;
+UniformProb; smartCross; smallElite;3692;1;10000; 1222_0533;0;;;;
+UniformProb; smartCross; smallElite;2951;1;10000; 1222_1125;0;;;;
+UniformProb; smartCross; smallElite;3405;1;10000; 1222_1701;0;;;;
+UniformProb; smartCross; smallElite;3465;1;10000; 1222_2206;0;;;;
+UniformProb; smartCross; smallElite;3653;1;10000; 1223_0227;0;;;;
+UniformProb; smartCross; smallElite;3167;2;10000; 1222_0054;0;;;;
+UniformProb; smartCross; smallElite;3124;2;10000; 1222_0446;0;;;;
+UniformProb; smartCross; smallElite;2869;2;10000; 1222_0910;0;;;;
+UniformProb; smartCross; smallElite;2711;2;10000; 1222_1504;0;;;;
+UniformProb; smartCross; smallElite;3105;2;10000; 1222_1922;0;;;;
+UniformProb; smartCross; smallElite;2976;3;10000; 1222_0028;0;;;;
+UniformProb; smartCross; smallElite;2728;3;10000; 1222_0148;0;;;;
+UniformProb; smartCross; smallElite;3975;3;10000; 1222_0355;0;;;;
+UniformProb; smartCross; smallElite;2796;3;10000; 1221_2126;0;;;;
+UniformProb; smartCross; smallElite;2518;3;10000; 1221_2249;0;;;;
+UniformProb; smartCross; smallElite;3124;4;10000; 1221_2130;0;;;;
+UniformProb; smartCross; smallElite;3079;4;10000; 1222_0401;0;;;;
+UniformProb; smartCross; smallElite;3472;4;10000; 1222_0941;0;;;;
+UniformProb; smartCross; smallElite;3265;4;10000; 1222_1526;0;;;;
+UniformProb; smartCross; smallElite;3814;4;10000; 1222_2115;0;;;;
+RJSProb; smartCross; smallElite;9944;0;10000; 1224_1054;0;;;;
+RJSProb; smartCross; smallElite;9972;0;10000; 1224_1334;0;;;;
+RJSProb; smartCross; smallElite;10020;0;10000; 1224_1606;0;;;;
+RJSProb; smartCross; smallElite;9964;0;10000; 1224_1842;0;;;;
+RJSProb; smartCross; smallElite;9894;0;10000; 1224_2129;0;;;;
+RJSProb; smartCross; smallElite;10236;1;10000; 1223_0547;0;;;;
+RJSProb; smartCross; smallElite;10153;1;10000; 1223_0729;0;;;;
+RJSProb; smartCross; smallElite;10044;1;10000; 1223_0910;0;;;;
+RJSProb; smartCross; smallElite;10158;1;10000; 1223_1049;0;;;;
+RJSProb; smartCross; smallElite;10054;1;10000; 1223_1226;0;;;;
+RJSProb; smartCross; smallElite;10292;2;10000; 1222_2320;0;;;;
+RJSProb; smartCross; smallElite;9992;2;10000; 1223_0033;0;;;;
+RJSProb; smartCross; smallElite;10146;2;10000; 1223_0138;0;;;;
+RJSProb; smartCross; smallElite;10200;2;10000; 1223_0248;0;;;;
+RJSProb; smartCross; smallElite;10534;2;10000; 1223_0358;0;;;;
+RJSProb; smartCross; smallElite;8097;3;10000; 1222_0530;0;;;;
+RJSProb; smartCross; smallElite;7170;3;10000; 1222_0632;0;;;;
+RJSProb; smartCross; smallElite;6534;3;10000; 1222_0730;0;;;;
+RJSProb; smartCross; smallElite;7877;3;10000; 1222_0821;0;;;;
+RJSProb; smartCross; smallElite;8053;3;10000; 1222_0923;0;;;;
+RJSProb; smartCross; smallElite;6149;4;10000; 1223_0215;0;;;;
+RJSProb; smartCross; smallElite;6391;4;10000; 1223_0332;0;;;;
+RJSProb; smartCross; smallElite;6340;4;10000; 1223_0450;0;;;;
+RJSProb; smartCross; smallElite;6641;4;10000; 1223_0604;0;;;;
+RJSProb; smartCross; smallElite;6666;4;10000; 1223_0722;0;;;;
+RSJProb; smartCross; smallElite;9998;0;10000; 1225_0010;0;;;;
+RSJProb; smartCross; smallElite;10000;0;10000; 1225_0234;0;;;;
+RSJProb; smartCross; smallElite;10052;0;10000; 1225_0455;0;;;;
+RSJProb; smartCross; smallElite;10046;0;10000; 1225_0711;0;;;;
+RSJProb; smartCross; smallElite;10076;0;10000; 1225_0923;0;;;;
+RSJProb; smartCross; smallElite;10002;1;10000; 1223_1358;0;;;;
+RSJProb; smartCross; smallElite;10009;1;10000; 1223_1535;0;;;;
+RSJProb; smartCross; smallElite;10166;1;10000; 1223_1710;0;;;;
+RSJProb; smartCross; smallElite;10163;1;10000; 1223_1845;0;;;;
+RSJProb; smartCross; smallElite;10101;1;10000; 1223_2018;0;;;;
+RSJProb; smartCross; smallElite;10007;2;10000; 1223_0509;0;;;;
+RSJProb; smartCross; smallElite;9999;2;10000; 1223_0613;0;;;;
+RSJProb; smartCross; smallElite;10564;2;10000; 1223_0725;0;;;;
+RSJProb; smartCross; smallElite;9937;2;10000; 1223_0835;0;;;;
+RSJProb; smartCross; smallElite;9848;2;10000; 1223_0941;0;;;;
+RSJProb; smartCross; smallElite;6937;3;10000; 1222_1027;0;;;;
+RSJProb; smartCross; smallElite;8212;3;10000; 1222_1121;0;;;;
+RSJProb; smartCross; smallElite;7248;3;10000; 1222_1218;0;;;;
+RSJProb; smartCross; smallElite;8594;3;10000; 1222_1312;0;;;;
+RSJProb; smartCross; smallElite;8216;3;10000; 1222_1413;0;;;;
+RSJProb; smartCross; smallElite;6482;4;10000; 1223_0839;0;;;;
+RSJProb; smartCross; smallElite;6956;4;10000; 1223_0955;0;;;;
+RSJProb; smartCross; smallElite;7250;4;10000; 1223_1116;0;;;;
+RSJProb; smartCross; smallElite;6891;4;10000; 1223_1226;0;;;;
+RSJProb; smartCross; smallElite;7284;4;10000; 1223_1341;0;;;;

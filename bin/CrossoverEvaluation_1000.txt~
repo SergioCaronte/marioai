@@ -1,0 +1,18 @@
+Evaluation for crossover method: splitCross
+RuleBased score average 3461.2
+UniformProb score average 2538.2
+RJSProb score average 6700.2
+RSJProb score average 6927.6
+splitCross method score average 4906.8
+
+Evaluation for crossover method: zipperCross
+RuleBased score average 270.4
+UniformProb score average 2536.6
+RJSProb score average 6411.4
+RSJProb score average 6961.6
+zipperCross method score average 4045.0
+
+New Test
+
+Evaluation for crossover method: splitCross
+Evaluation for crossover method: splitCross

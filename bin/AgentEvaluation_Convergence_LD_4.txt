@@ -1,0 +1,7 @@
+Evaluation for agent: RSJProb level difficulty: 4
+Level 4. Turn 0 converged at 616382
+Level 4. Turn 1 converged at 670653
+Level 4. Turn 2 converged at 1703240
+Level 4. Turn 3 converged at 192270
+Level 4. Turn 4 converged at 743640
+Average Score 9357.0 Track 4

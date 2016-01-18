@@ -1,0 +1,16 @@
+Evaluation for agent: RuleBased
+Average Score 6040.0 Track 1
+
+
+Evaluation for agent: UniformProb
+Average Score 3433.2 Track 1
+
+
+Evaluation for agent: RJSProb
+Average Score 10129.0 Track 1
+
+
+Evaluation for agent: RSJProb
+Average Score 10088.2 Track 1
+
+
