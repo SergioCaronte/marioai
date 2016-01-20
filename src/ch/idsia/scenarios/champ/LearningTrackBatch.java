@@ -32,6 +32,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -115,9 +116,9 @@ private static int evaluateSubmission(MarioAIOptions marioAIOptions, LearningAge
     return f;
 }
 
-private static void EvaluateBatch(String[] args)
+private static void EvaluateBatch(CommandLine line)
 {
-	int ld = Integer.parseInt(args[1]);
+	int ld = Integer.parseInt(line.getOptionValue("ld", "1"));
 	int turns = 5;
 	System.out.println("AGENT EVALUATION");
 	
@@ -362,6 +363,8 @@ private static void EvaluateBatch(String[] args)
 		options.addOption("m", EAParameters.MUTATION_PROB, true, "Probability of mutating one gene (flipping one bit)");
 		options.addOption("k", EAParameters.TOURNAMENT_SIZE, true, "Number of tournament participants");
 		
+		options.addOption("ld", "difficulty", true, "Difficulty level (1-5)");
+		
 		CommandLine line = null;
 		CommandLineParser parser = new DefaultParser();
 	    try {
@@ -377,20 +380,23 @@ private static void EvaluateBatch(String[] args)
 	    
 	    //the parameters
 	    Map<String, EAParameter<?>> eaParameters = EAParameters.parametersFromCommandLine(line);
+	    
+	    System.out.println("Parsed paramz:");
+	    for(Entry<String, EAParameter<?>> param: eaParameters.entrySet()){
+	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue().value));
+	    }
 
 		
-		/*if(args.length > 0)
+		if(line.hasOption(EAParameters.GENERATIONS))
 		{
-			System.out.println("Setting generations to " + args[0]);
-			SNSLearningAgent.generations = Integer.parseInt(args[0]);
-		}*/
-	    
-	    
+			SNSLearningAgent.generations = Integer.parseInt(line.getOptionValue(EAParameters.GENERATIONS));
+			System.out.println("Setting generations to " + SNSLearningAgent.generations);
+		}
 	    
 	    
 		//EvaluateCross(args);
 		//EvaluateBreeder(args);
-		EvaluateBatch(args);
+		EvaluateBatch(line);
 		//EvaluateConverge(args);
 		
 	    System.exit(0);
