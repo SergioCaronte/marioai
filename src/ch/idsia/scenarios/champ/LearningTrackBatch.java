@@ -30,12 +30,22 @@ package ch.idsia.scenarios.champ;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.LearningAgent;
 import ch.idsia.agents.SNSLearningAgent;
 import ch.idsia.benchmark.tasks.BasicTask;
 import ch.idsia.benchmark.tasks.LearningTask;
+import ch.idsia.evolution.ea.EAParameter;
+import ch.idsia.evolution.ea.EAParameters;
 import ch.idsia.tools.EvaluationInfo;
 import ch.idsia.tools.MarioAIOptions;
 
@@ -160,199 +170,229 @@ private static void EvaluateBatch(String[] args)
 	}
 }
 
-private static void EvaluateConverge(String[] args)
-{
-	int ld = Integer.parseInt(args[0]);
-	
-	int turns = 5;
-	if(args.length > 1)
-		turns = Integer.parseInt(args[1]);
-	
-	System.out.println("AGENT CONVERGENCE EVALUATION");
-	
-	MarioAIOptions marioOpts;
-	/*
-	 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
-	 */
-	SNSLearningAgent[] agents = new SNSLearningAgent[1];
-	agents[0] = new SNSLearningAgent("RSJProb", "smartCross", "Competition");
-	agents[0].runTillConverge = true;
-	
-	for(SNSLearningAgent ag : agents)
+	private static void EvaluateConverge(String[] args)
 	{
-		String mes = "Evaluation for agent: " + ag.agentType +  " level difficulty: " + ld;
-		System.out.println(mes);
-		appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
+		int ld = Integer.parseInt(args[0]);
 		
-		System.out.println("Agent " + ag.agentType +" started.");
-		float totalSum = 0;
-		//for(int i = 0; i < instances.length; i++)
-		{
-			float totalTrackSum = 0;
-			for(int turn = 0; turn < turns; turn++)
-			{
-				System.out.println("\tInstance level "+ ld +" started. turn " + turn);
-				String[] args2 = new String[1];
-				marioOpts = new MarioAIOptions(args2);
-				marioOpts.setAgent(ag);
-				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
-				//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
-			    //System.out.println("main.learningAgent = " + learningAgent + " iteration " + i);
-			    
-			    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
-			    totalTrackSum += finalScore;
-			    System.out.println("\tInstance finished. Final Score = " + finalScore);
-			    mes = "Level " + ld + ". Turn " + turn + " converged at " + ag.convergedAt;
-			    appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
-			}
-			float trackAverage = totalTrackSum/turns;
-			mes = "Average Score " + trackAverage + " Track " + ld;
-			appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
-			totalSum += trackAverage;
-		}
-		System.out.println("Agent " + ag.agentType +" finished.");
-	}
-}
-
-private static void EvaluateCross(String[] args)
-{
-	System.out.println("CROSSOVER EVALUATION");
-	
-	int turns = 5;
-	
-	String[] crosses = new String[2];
-	crosses[0] = "splitCross";
-	crosses[1] = "smartCross";
-	
-	for(String cross : crosses)
-	{
+		int turns = 5;
+		if(args.length > 1)
+			turns = Integer.parseInt(args[1]);
+		
+		System.out.println("AGENT CONVERGENCE EVALUATION");
+		
+		MarioAIOptions marioOpts;
 		/*
 		 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
-		 * Crossover: splitCross, zipperCross
-		 * Breeding: halfElite, quarterElite, quarterEliteMigration, smallElite
 		 */
-		
-		SNSLearningAgent[] agents = new SNSLearningAgent[4];
-		agents[0] = new SNSLearningAgent("RuleBased", cross, "quarterEliteMigration");
+		SNSLearningAgent[] agents = new SNSLearningAgent[1];
+		agents[0] = new SNSLearningAgent("RSJProb", "smartCross", "Competition");
 		agents[0].runTillConverge = true;
-		agents[1] = new SNSLearningAgent("UniformProb", cross, "quarterEliteMigration");
-		agents[1].runTillConverge = true;
-		agents[2] = new SNSLearningAgent("RJSProb", cross, "quarterEliteMigration");
-		agents[2].runTillConverge = true;
-		agents[3] = new SNSLearningAgent("RSJProb", cross, "quarterEliteMigration");
-		agents[3].runTillConverge = true;
 		
-		String mes = "Evaluation for crossover method: " + cross;
-		System.out.println(mes);
-		appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-		
-		float totalSum = 0;
 		for(SNSLearningAgent ag : agents)
 		{
-			float partialTotalSum = 0;
-			for(int turn = 0; turn < turns; turn++)
+			String mes = "Evaluation for agent: " + ag.agentType +  " level difficulty: " + ld;
+			System.out.println(mes);
+			appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
+			
+			System.out.println("Agent " + ag.agentType +" started.");
+			float totalSum = 0;
+			//for(int i = 0; i < instances.length; i++)
 			{
-				ag.reset();
-				System.out.println("Agent " + ag.agentType +" started. Turn " + turn);
-				MarioAIOptions instances = new MarioAIOptions(args);
-				instances.setAgent(ag);
-				instances.setArgs("-ld 2 -vis off -fps 100");		    
-			    float finalScore = LearningTrackBatch.evaluateSubmission(instances, ag);	
-			    partialTotalSum += finalScore;
-				System.out.println("Agent " + ag.agentType +" finished turn " + turn + " score: " + finalScore);
-				mes = "Turn " + turn + " converged at " + ag.convergedAt;
-				appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+				float totalTrackSum = 0;
+				for(int turn = 0; turn < turns; turn++)
+				{
+					System.out.println("\tInstance level "+ ld +" started. turn " + turn);
+					String[] args2 = new String[1];
+					marioOpts = new MarioAIOptions(args2);
+					marioOpts.setAgent(ag);
+					marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
+					//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
+				    //System.out.println("main.learningAgent = " + learningAgent + " iteration " + i);
+				    
+				    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
+				    totalTrackSum += finalScore;
+				    System.out.println("\tInstance finished. Final Score = " + finalScore);
+				    mes = "Level " + ld + ". Turn " + turn + " converged at " + ag.convergedAt;
+				    appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
+				}
+				float trackAverage = totalTrackSum/turns;
+				mes = "Average Score " + trackAverage + " Track " + ld;
+				appendMessage("AgentEvaluation_Convergence_LD_" + ld + ".txt", mes);
+				totalSum += trackAverage;
 			}
-			partialTotalSum = partialTotalSum/turns;
-			mes = ag.agentType + " score average " + partialTotalSum;
+			System.out.println("Agent " + ag.agentType +" finished.");
+		}
+	}
+	
+	private static void EvaluateCross(String[] args)
+	{
+		System.out.println("CROSSOVER EVALUATION");
+		
+		int turns = 5;
+		
+		String[] crosses = new String[2];
+		crosses[0] = "splitCross";
+		crosses[1] = "smartCross";
+		
+		for(String cross : crosses)
+		{
+			/*
+			 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
+			 * Crossover: splitCross, zipperCross
+			 * Breeding: halfElite, quarterElite, quarterEliteMigration, smallElite
+			 */
+			
+			SNSLearningAgent[] agents = new SNSLearningAgent[4];
+			agents[0] = new SNSLearningAgent("RuleBased", cross, "quarterEliteMigration");
+			agents[0].runTillConverge = true;
+			agents[1] = new SNSLearningAgent("UniformProb", cross, "quarterEliteMigration");
+			agents[1].runTillConverge = true;
+			agents[2] = new SNSLearningAgent("RJSProb", cross, "quarterEliteMigration");
+			agents[2].runTillConverge = true;
+			agents[3] = new SNSLearningAgent("RSJProb", cross, "quarterEliteMigration");
+			agents[3].runTillConverge = true;
+			
+			String mes = "Evaluation for crossover method: " + cross;
+			System.out.println(mes);
 			appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-			totalSum += partialTotalSum;
-		}
-		totalSum = totalSum/agents.length;
-		mes = cross + " method score average " + totalSum + "\n";
-		appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-	}
-}
-
-private static void EvaluateBreeder(String[] args)
-{
-	System.out.println("BREEDING EVALUATION");
-	
-	int turns = 5;
-	
-	String[] breeder = new String[4];
-	breeder[0] = "halfElite";
-	breeder[1] = "quarterElite";
-	breeder[2] = "quarterEliteMigration";
-	breeder[3] = "smallElite";
-	
-	for(String breed : breeder)
-	{
-		/*
-		 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
-		 * Crossover: splitCross, zipperCross
-		 * Breeding: halfElite, quarterElite, quarterEliteMigration, smallElite
-		 */
-		
-		SNSLearningAgent[] agents = new SNSLearningAgent[4];
-		agents[0] = new SNSLearningAgent("RuleBased", "splitCross", breed);
-		agents[1] = new SNSLearningAgent("UniformProb", "splitCross", breed);
-		agents[2] = new SNSLearningAgent("RJSProb", "splitCross", breed);
-		agents[3] = new SNSLearningAgent("RSJProb", "splitCross", breed);
-		
-		String mes = "Evaluation for breeding method: " + breed;
-		System.out.println(mes);
-		appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-		
-		float totalSum = 0;
-		for(SNSLearningAgent ag : agents)
-		{
-			float partialTotalSum = 0;
-			for(int turn = 0; turn < turns; turn++)
+			
+			float totalSum = 0;
+			for(SNSLearningAgent ag : agents)
 			{
-				ag.reset();
-				System.out.println("Agent " + ag.agentType +" started. Turn " + turn);
-				MarioAIOptions instances = new MarioAIOptions(args);
-				instances.setAgent(ag);
-				instances.setArgs("-ld 2 -vis off -fps 100");		    
-			    float finalScore = LearningTrackBatch.evaluateSubmission(instances, ag);	
-			    partialTotalSum += finalScore;
-				System.out.println("Agent " + ag.agentType +" finished turn " + turn + " score: " + finalScore);
+				float partialTotalSum = 0;
+				for(int turn = 0; turn < turns; turn++)
+				{
+					ag.reset();
+					System.out.println("Agent " + ag.agentType +" started. Turn " + turn);
+					MarioAIOptions instances = new MarioAIOptions(args);
+					instances.setAgent(ag);
+					instances.setArgs("-ld 2 -vis off -fps 100");		    
+				    float finalScore = LearningTrackBatch.evaluateSubmission(instances, ag);	
+				    partialTotalSum += finalScore;
+					System.out.println("Agent " + ag.agentType +" finished turn " + turn + " score: " + finalScore);
+					mes = "Turn " + turn + " converged at " + ag.convergedAt;
+					appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+				}
+				partialTotalSum = partialTotalSum/turns;
+				mes = ag.agentType + " score average " + partialTotalSum;
+				appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+				totalSum += partialTotalSum;
 			}
-			partialTotalSum = partialTotalSum/turns;
-			mes = ag.agentType + " score average " + partialTotalSum;
-			appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-			totalSum += partialTotalSum;
+			totalSum = totalSum/agents.length;
+			mes = cross + " method score average " + totalSum + "\n";
+			appendMessage("CrossoverEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
 		}
-		totalSum = totalSum/agents.length;
-		mes = breed + " method score average " + totalSum + "\n";
-		appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
 	}
-}
-
-public static void appendMessage(String logName, String str)
-{
-	try {
-		BufferedWriter out = new BufferedWriter(new FileWriter(logName, true));
-		out.write(str + "\n");
-		out.close();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-}
-
-public static void main(String[] args)
-{
-	if(args.length > 0)
-	{
-		System.out.println("Setting generations to " + args[0]);
-		SNSLearningAgent.generations = Integer.parseInt(args[0]);
-	}
-	//EvaluateCross(args);
-	//EvaluateBreeder(args);
-	EvaluateBatch(args);
-	//EvaluateConverge(args);
 	
-    System.exit(0);
-}
+	private static void EvaluateBreeder(String[] args)
+	{
+		System.out.println("BREEDING EVALUATION");
+		
+		int turns = 5;
+		
+		String[] breeder = new String[4];
+		breeder[0] = "halfElite";
+		breeder[1] = "quarterElite";
+		breeder[2] = "quarterEliteMigration";
+		breeder[3] = "smallElite";
+		
+		for(String breed : breeder)
+		{
+			/*
+			 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
+			 * Crossover: splitCross, zipperCross
+			 * Breeding: halfElite, quarterElite, quarterEliteMigration, smallElite
+			 */
+			
+			SNSLearningAgent[] agents = new SNSLearningAgent[4];
+			agents[0] = new SNSLearningAgent("RuleBased", "splitCross", breed);
+			agents[1] = new SNSLearningAgent("UniformProb", "splitCross", breed);
+			agents[2] = new SNSLearningAgent("RJSProb", "splitCross", breed);
+			agents[3] = new SNSLearningAgent("RSJProb", "splitCross", breed);
+			
+			String mes = "Evaluation for breeding method: " + breed;
+			System.out.println(mes);
+			appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+			
+			float totalSum = 0;
+			for(SNSLearningAgent ag : agents)
+			{
+				float partialTotalSum = 0;
+				for(int turn = 0; turn < turns; turn++)
+				{
+					ag.reset();
+					System.out.println("Agent " + ag.agentType +" started. Turn " + turn);
+					MarioAIOptions instances = new MarioAIOptions(args);
+					instances.setAgent(ag);
+					instances.setArgs("-ld 2 -vis off -fps 100");		    
+				    float finalScore = LearningTrackBatch.evaluateSubmission(instances, ag);	
+				    partialTotalSum += finalScore;
+					System.out.println("Agent " + ag.agentType +" finished turn " + turn + " score: " + finalScore);
+				}
+				partialTotalSum = partialTotalSum/turns;
+				mes = ag.agentType + " score average " + partialTotalSum;
+				appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+				totalSum += partialTotalSum;
+			}
+			totalSum = totalSum/agents.length;
+			mes = breed + " method score average " + totalSum + "\n";
+			appendMessage("BreedingEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+		}
+	}
+	
+	public static void appendMessage(String logName, String str)
+	{
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(logName, true));
+			out.write(str + "\n");
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+		// create Options object
+		Options options = new Options();
+
+		options.addOption("g", EAParameters.GENERATIONS, true, "Number of generations");
+		options.addOption("p", EAParameters.POP_SIZE, true, "Population size");
+		options.addOption("x", EAParameters.CROSSOVER_PROB, true, "Probability of cross-over");
+		options.addOption("m", EAParameters.MUTATION_PROB, true, "Probability of mutating one gene (flipping one bit)");
+		options.addOption("k", EAParameters.TOURNAMENT_SIZE, true, "Number of tournament participants");
+		
+		CommandLine line = null;
+		CommandLineParser parser = new DefaultParser();
+	    try {
+	        // parse the command line arguments
+	        line = parser.parse( options, args );
+	    }
+	    catch( ParseException exp ) {
+	        // oops, something went wrong
+	        System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+	        System.err.println( "Exiting");
+	        System.exit(0);
+	    }
+	    
+	    //the parameters
+	    Map<String, EAParameter<?>> eaParameters = EAParameters.parametersFromCommandLine(line);
+
+		
+		/*if(args.length > 0)
+		{
+			System.out.println("Setting generations to " + args[0]);
+			SNSLearningAgent.generations = Integer.parseInt(args[0]);
+		}*/
+	    
+	    
+	    
+	    
+		//EvaluateCross(args);
+		//EvaluateBreeder(args);
+		EvaluateBatch(args);
+		//EvaluateConverge(args);
+		
+	    System.exit(0);
+	}
 }
