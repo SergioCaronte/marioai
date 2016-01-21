@@ -31,6 +31,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -116,9 +117,9 @@ private static int evaluateSubmission(MarioAIOptions marioAIOptions, LearningAge
     return f;
 }
 
-private static void EvaluateBatch(CommandLine line)
+private static void EvaluateBatch(Map<String, Object> parameters)
 {
-	int ld = Integer.parseInt(line.getOptionValue("ld", "1"));
+	int ld = (int) parameters.get(EAParameters.DIFFICULTY);//Integer.parseInt(line.getOptionValue("ld", "1"));
 	int turns = 5;
 	System.out.println("AGENT EVALUATION");
 	
@@ -127,17 +128,20 @@ private static void EvaluateBatch(CommandLine line)
 	/*
 	 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
 	 */
-	SNSLearningAgent[] agents = new SNSLearningAgent[4];
-	agents[0] = new SNSLearningAgent("RuleBased", "smartCross", "smallElite");
+	@SuppressWarnings("unchecked") //otherwise the compiler warns against this cast
+	List<SNSLearningAgent> agents = (List<SNSLearningAgent>) parameters.get(EAParameters.AGENTS);
+	SNSLearningAgent firstAgent = agents.get(0);
+	
+	/*agents[0] = new SNSLearningAgent("RuleBased", "smartCross", "smallElite");
 	agents[1] = new SNSLearningAgent("UniformProb", "smartCross", "smallElite");
 	agents[2] = new SNSLearningAgent("RJSProb", "smartCross", "smallElite");
-	agents[3] = new SNSLearningAgent("RSJProb", "smartCross", "smallElite");
+	agents[3] = new SNSLearningAgent("RSJProb", "smartCross", "smallElite");*/
 	
 	for(SNSLearningAgent ag : agents)
 	{
 		String mes = "Evaluation for agent: " + ag.agentType;
 		System.out.println(mes);
-		appendMessage("AgentEvaluation_LD_" + ld + "_" + agents[0].getMaxGenerations() + ".txt", mes);
+		appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
 		
 		System.out.println("Agent " + ag.agentType +" started.");
 		float totalSum = 0;
@@ -160,7 +164,7 @@ private static void EvaluateBatch(CommandLine line)
 			}
 			float trackAverage = totalTrackSum/turns;
 			mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
-			appendMessage("AgentEvaluation_LD_" + ld + "_" + agents[0].getMaxGenerations() + ".txt", mes);
+			appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
 			totalSum += trackAverage;
 		}
 		//float totalAverage = totalSum;
@@ -379,11 +383,11 @@ private static void EvaluateBatch(CommandLine line)
 	    }
 	    
 	    //the parameters
-	    Map<String, EAParameter<?>> eaParameters = EAParameters.parametersFromCommandLine(line);
+	    Map<String, Object> parameters = EAParameters.parametersFromCommandLine(line);
 	    
 	    System.out.println("Parsed paramz:");
-	    for(Entry<String, EAParameter<?>> param: eaParameters.entrySet()){
-	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue().value));
+	    for(Entry<String, Object> param: parameters.entrySet()){
+	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue()));
 	    }
 
 		
@@ -396,7 +400,7 @@ private static void EvaluateBatch(CommandLine line)
 	    
 		//EvaluateCross(args);
 		//EvaluateBreeder(args);
-		EvaluateBatch(line);
+		EvaluateBatch(parameters);
 		//EvaluateConverge(args);
 		
 	    System.exit(0);
