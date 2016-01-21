@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import ch.idsia.agents.Agent;
+import ch.idsia.agents.SNSLearningAgent;
 import ch.idsia.agents.learning.SNSAgent;
 import ch.idsia.benchmark.tasks.Task;
 import ch.idsia.evolution.EA;
@@ -123,8 +124,8 @@ public class SNSEA implements EA
 		
 		for (int i = 1; i < populationSize; i++)
 	    {	
-			int p1 = i > 10 ? compete() : 0;
-			int p2 = compete();
+			int p1 = i > 10 ? compete() : 0;	//10 first individuals will have elite as parent1
+			int p2 = compete();					//2nd parent always comes from tournament
 			while(p1 == p2)	p2 = compete();
 			
 			spring[i] = cross(population[p1], population[p2]);
@@ -146,6 +147,29 @@ public class SNSEA implements EA
 			else							return c3;
 		else if(fitness[c2] > fitness[c3])	return c2;
 		else								return c3;
+	}
+	
+	/**
+	 * Selects a number of individuals randomly
+	 * and returns the index of the one with best fitness
+	 * @param size number of tournament participants
+	 * @return
+	 */
+	private int tournament(int size) {
+		
+		int best = 0;
+		float bestFitness = Float.NEGATIVE_INFINITY;
+		
+		//selects the best individual from randomly sampled tournament participants
+		for(int i = 0; i < size; i++){
+			int index = R.nextInt(populationSize);
+			if(fitness[index] > bestFitness){
+				bestFitness = fitness[index];
+				best = index;
+			}
+		}
+		
+		return best;
 	}
 	
 	public void halfElite()
@@ -224,7 +248,53 @@ public class SNSEA implements EA
 			}
 		}
 	}
+	
+	/**
+	 * Generates the next generation via tournament selection and elitism of a single individual
+	 * TODO: make this method be called
+	 */
+	public void singleEliteTournament(){
+		Evolvable spring[] = new Evolvable[populationSize];
+		spring[0] = population[0];	//elite goes directly to next generation
 		
+		for (int i = 1; i < populationSize; i+=2) {
+			//parents selected via tournament
+			int p1 = tournament(SNSLearningAgent.tournamentSize);	
+			int p2 = tournament(SNSLearningAgent.tournamentSize);
+			while(p1 == p2)	p2 = tournament(SNSLearningAgent.tournamentSize);
+			
+			//performs crossover if probability is matched
+			if(Math.random() < SNSLearningAgent.crossoverProb){
+				spring[i] = cross(population[p1], population[p2]);
+				if (i+1 < populationSize) spring[i+1] = cross(population[p2], population[p1]);
+			}
+			else{
+				spring[i] = population[p1];
+				if (i+1 < populationSize) spring[i+1] = population[p2];
+			}
+			
+			//performs mutation if probability is reached
+			if(Math.random() < SNSLearningAgent.mutationProb){
+				spring[i].mutate();
+			}
+			if(i+1 < populationSize && Math.random() < SNSLearningAgent.mutationProb){
+				spring[i+1].mutate();
+			}
+	    }
+		
+		//replaces old population with the new one
+		for(int i = 1; i < populationSize; i++) {
+			population[i] = spring[i];
+		}
+	}
+	
+	/**
+	 * Performs crossover between two parents and generate ONE individual
+	 * TODO: parameterize the 'randomness' in the crossover point
+	 * @param parent1
+	 * @param parent2
+	 * @return
+	 */
 	private Evolvable cross(Evolvable parent1, Evolvable parent2)
 	{
 		if(((SNSAgent)parent1).getBehavior().equals("RuleBased"))

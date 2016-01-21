@@ -104,9 +104,12 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 		return getUniformProb(dna[cur++ %3000]);
 	}
 	
-	/*
+	
+	/**
 	 * GetUniformProb has the same probability to press any button.
-	 * Thus any buttom has 1/6 chance.
+	 * Thus any button has 1/6 chance.
+	 * @param section
+	 * @return
 	 */
 	public  boolean[] getUniformProb(int section)
 	{

@@ -135,6 +135,9 @@ public final class LearningTrackBatch
 		List<SNSLearningAgent> agents = (List<SNSLearningAgent>) parameters.get(EAParameters.AGENTS);
 		SNSLearningAgent firstAgent = agents.get(0);
 		
+		SNSLearningAgent.setParameters(parameters);
+		
+		
 		/*agents[0] = new SNSLearningAgent("RuleBased", "smartCross", "smallElite");
 		agents[1] = new SNSLearningAgent("UniformProb", "smartCross", "smallElite");
 		agents[2] = new SNSLearningAgent("RJSProb", "smartCross", "smallElite");
@@ -149,27 +152,28 @@ public final class LearningTrackBatch
 			System.out.println("Agent " + ag.agentType +" started.");
 			float totalSum = 0;
 			//for(int i = 0; i < instances.length; i++)
+			
+			float totalTrackSum = 0;
+			for(int turn = 0; turn < turns; turn++)
 			{
-				float totalTrackSum = 0;
-				for(int turn = 0; turn < turns; turn++)
-				{
-					System.out.println("\tInstance level "+ ld +" started. turn " + turn);
-					String[] args2 = new String[1];
-					marioOpts = new MarioAIOptions(args2);
-					marioOpts.setAgent(ag);
-					marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
-					//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
-				    //System.out.println("main.learningAgent = " + learningAgent + " iteration " + i);
-				    
-				    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
-				    totalTrackSum += finalScore;
-				    System.out.println("\tInstance finished. Final Score = " + finalScore);
-				}
-				float trackAverage = totalTrackSum/turns;
-				mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
-				appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
-				totalSum += trackAverage;
+				System.out.println("\tInstance level "+ ld +" started. turn " + turn);
+				String[] args2 = new String[1];
+				marioOpts = new MarioAIOptions(args2);
+				marioOpts.setAgent(ag);
+				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
+				//marioOpts.setArgs("-ld " + ld + " -fps 60");
+				//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
+			    System.out.println("evalSubm");
+			    
+			    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
+			    totalTrackSum += finalScore;
+			    System.out.println("\tInstance finished. Final Score = " + finalScore);
 			}
+			float trackAverage = totalTrackSum/turns;
+			mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
+			appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
+			totalSum += trackAverage;
+			
 			//float totalAverage = totalSum;
 			//mes = "Average Total Score " + totalAverage + " and Total Score " + totalSum + "\n";
 			//appendMessage("AgentEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);

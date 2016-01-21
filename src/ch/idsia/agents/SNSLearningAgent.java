@@ -10,10 +10,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import ch.idsia.agents.learning.SNSAgent;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.benchmark.tasks.LearningTask;
+import ch.idsia.evolution.ea.EAParameters;
 import ch.idsia.evolution.ea.SNSEA;
 import ch.idsia.tools.MarioAIOptions;
 
@@ -21,6 +23,10 @@ public class SNSLearningAgent implements LearningAgent
 {
 	public static int generations = 1000;
 	public static int populationSize = 100;
+	public static int tournamentSize = 2;
+	
+	public static float crossoverProb = .90f;
+	public static float mutationProb = .001f;
 	
 	// evolutionary agent
 	private SNSAgent agent;
@@ -61,6 +67,7 @@ public class SNSLearningAgent implements LearningAgent
 		agent = new SNSAgent(agentType);
 	}
 	
+	
 	@Override
 	public void init() 
 	{
@@ -77,6 +84,19 @@ public class SNSLearningAgent implements LearningAgent
 		
 		timeStamp = new SimpleDateFormat("MMdd_HHmm").format(new Date());
 		bestScore = 0;
+	}
+	
+	/**
+	 * Sets generations, population, crossover probability and mutation probability 
+	 * according to the parameters
+	 * @param parameters
+	 */
+	public static void setParameters(Map<String, Object> parameters){
+		generations = (int) parameters.get(EAParameters.GENERATIONS);
+		populationSize = (int) parameters.get(EAParameters.POP_SIZE);
+		tournamentSize = (int) parameters.get(EAParameters.TOURNAMENT_SIZE);
+		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
+		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
 	}
 	
 	public void learnTilConverge()
@@ -149,19 +169,19 @@ public class SNSLearningAgent implements LearningAgent
 		this.currentEvaluation++;
 		String log = "Arguments ";
 		 
-		 levelDificulty = String.valueOf(this.opts.getLevelDifficulty());
-		 log += "-ld " + levelDificulty;
-		 log += " -ll " + opts.getLevelLength();
-		 log += " -lt " + opts.getLevelType();
-		 log += " -ls " + opts.getLevelRandSeed();
+		levelDificulty = String.valueOf(this.opts.getLevelDifficulty());
+		log += "-ld " + levelDificulty;
+		log += " -ll " + opts.getLevelLength();
+		log += " -lt " + opts.getLevelType();
+		log += " -ls " + opts.getLevelRandSeed();
 		 
-		 log +="\n";
-		 log +="EA Generation Behavior: " + ea.generateBehavior + "\n";
-		 log +="EA Cross Behavior: " + ea.crossBehavior + "\n";
-		 log +="Agent Behavior: " + agent.getBehavior() + "\n";
+		log +="\n";
+		log +="EA Generation Behavior: " + ea.generateBehavior + "\n";
+		log +="EA Cross Behavior: " + ea.crossBehavior + "\n";
+		log +="Agent Behavior: " + agent.getBehavior() + "\n";
 		 
-		 for (int gen = 0; gen < SNSLearningAgent.generations; gen++)
-		 {
+		for (int gen = 0; gen < SNSLearningAgent.generations; gen++)
+		{
 			ea.evaluateGeneration();
 			 
 			float fitn = ea.getBestFitnesses()[0];
@@ -177,17 +197,17 @@ public class SNSLearningAgent implements LearningAgent
 			}
 			//create next generation
 			ea.nextGeneration();
-		 }
-		 // log name
-		 logName = "evolution/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
-		 // white log info
-		 writeLog(log);
-		 writeResult();
-		 // save best agent
-		 if(bestAgent != null)
-		 {
-			 ((SNSAgent)bestAgent).saveDna(timeStamp);
-		 }
+		}
+		// log name
+		logName = "evolution/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
+		// white log info
+		writeLog(log);
+		writeResult();
+		// save best agent
+		if(bestAgent != null)
+		{
+			((SNSAgent)bestAgent).saveDna(timeStamp);
+		}
 	}
 	
 	/*

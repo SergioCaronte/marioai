@@ -1,7 +1,7 @@
 <experiment>
 	<parameters>
-		<generations value="100" />
-		<pop-size value="50" />
+		<generations value="10" />
+		<pop-size value="30" />
 		<tournament-size value="5" />
 		<crossover-prob value=".99" />
 		<mutation-prob value=".003" />
