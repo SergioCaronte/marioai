@@ -35,11 +35,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.xml.sax.SAXException;
 
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.LearningAgent;
@@ -65,115 +68,115 @@ import ch.idsia.tools.MarioAIOptions;
 
 public final class LearningTrackBatch
 {
-final static long numberOfTrials = 1000;
-final static boolean scoring = false;
-private static int killsSum = 0;
-private static float marioStatusSum = 0;
-private static int timeLeftSum = 0;
-private static int marioModeSum = 0;
-private static boolean detailedStats = false;
-
-final static int populationSize = 100;
-
-private static int evaluateSubmission(MarioAIOptions marioAIOptions, LearningAgent learningAgent)
-{
-	// provides the level
-    LearningTask learningTask = new LearningTask(marioAIOptions); 
-    // it gives LearningAgent access to evaluator via method LearningTask.evaluate(Agent)
-    learningAgent.setLearningTask(learningTask);  
-    learningAgent.init();
-    //Passing args to be saved into log
-    ((SNSLearningAgent)learningAgent).setOpts(marioAIOptions);
-    // it launches the training process. numberOfTrials happen here
-    learningAgent.learn(); 
-    // this agent will be evaluated
-    Agent agent = learningAgent.getBestAgent();
-
-    // perform the gameplay task on the same level
-    //marioAIOptions.setVisualization(true);
-    //marioAIOptions.setFPS(24);
-    //System.out.println("LearningTrack best agent = " + agent);
-    marioAIOptions.setAgent(agent);
-    BasicTask basicTask = new BasicTask(marioAIOptions);
-    basicTask.setOptionsAndReset(marioAIOptions);
-    //System.out.println("basicTask = " + basicTask);
-    //System.out.println("agent = " + agent);
-
-    boolean verbose = false;
-    if (!basicTask.runSingleEpisode(1))  // make evaluation on the same episode once
-    {
-        System.out.println("MarioAI: out of computational time per action! Agent disqualified!");
-    }
-    EvaluationInfo evaluationInfo = basicTask.getEvaluationInfo();
-    //System.out.println(evaluationInfo.toString());
-
-    int f = evaluationInfo.computeWeightedFitness();
-    ((SNSLearningAgent)learningAgent).writeLog("SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
-    if (verbose)
-    {
-        System.out.println("Intermediate SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
-    }
-
-    return f;
-}
-
-private static void EvaluateBatch(Map<String, Object> parameters)
-{
-	int ld = (int) parameters.get(EAParameters.DIFFICULTY);//Integer.parseInt(line.getOptionValue("ld", "1"));
-	int turns = 5;
-	System.out.println("AGENT EVALUATION");
+	final static long numberOfTrials = 1000;
+	final static boolean scoring = false;
+	private static int killsSum = 0;
+	private static float marioStatusSum = 0;
+	private static int timeLeftSum = 0;
+	private static int marioModeSum = 0;
+	private static boolean detailedStats = false;
 	
-	//MarioAIOptions[] instances = new MarioAIOptions[5];
-	MarioAIOptions marioOpts;
-	/*
-	 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
-	 */
-	@SuppressWarnings("unchecked") //otherwise the compiler warns against this cast
-	List<SNSLearningAgent> agents = (List<SNSLearningAgent>) parameters.get(EAParameters.AGENTS);
-	SNSLearningAgent firstAgent = agents.get(0);
+	final static int populationSize = 100;
 	
-	/*agents[0] = new SNSLearningAgent("RuleBased", "smartCross", "smallElite");
-	agents[1] = new SNSLearningAgent("UniformProb", "smartCross", "smallElite");
-	agents[2] = new SNSLearningAgent("RJSProb", "smartCross", "smallElite");
-	agents[3] = new SNSLearningAgent("RSJProb", "smartCross", "smallElite");*/
-	
-	for(SNSLearningAgent ag : agents)
+	private static int evaluateSubmission(MarioAIOptions marioAIOptions, LearningAgent learningAgent)
 	{
-		String mes = "Evaluation for agent: " + ag.agentType;
-		System.out.println(mes);
-		appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
-		
-		System.out.println("Agent " + ag.agentType +" started.");
-		float totalSum = 0;
-		//for(int i = 0; i < instances.length; i++)
-		{
-			float totalTrackSum = 0;
-			for(int turn = 0; turn < turns; turn++)
-			{
-				System.out.println("\tInstance level "+ ld +" started. turn " + turn);
-				String[] args2 = new String[1];
-				marioOpts = new MarioAIOptions(args2);
-				marioOpts.setAgent(ag);
-				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
-				//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
-			    //System.out.println("main.learningAgent = " + learningAgent + " iteration " + i);
-			    
-			    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
-			    totalTrackSum += finalScore;
-			    System.out.println("\tInstance finished. Final Score = " + finalScore);
-			}
-			float trackAverage = totalTrackSum/turns;
-			mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
-			appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
-			totalSum += trackAverage;
-		}
-		//float totalAverage = totalSum;
-		//mes = "Average Total Score " + totalAverage + " and Total Score " + totalSum + "\n";
-		//appendMessage("AgentEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
-		
-		System.out.println("Agent " + ag.agentType +" finished.");
+		// provides the level
+	    LearningTask learningTask = new LearningTask(marioAIOptions); 
+	    // it gives LearningAgent access to evaluator via method LearningTask.evaluate(Agent)
+	    learningAgent.setLearningTask(learningTask);  
+	    learningAgent.init();
+	    //Passing args to be saved into log
+	    ((SNSLearningAgent)learningAgent).setOpts(marioAIOptions);
+	    // it launches the training process. numberOfTrials happen here
+	    learningAgent.learn(); 
+	    // this agent will be evaluated
+	    Agent agent = learningAgent.getBestAgent();
+	
+	    // perform the gameplay task on the same level
+	    //marioAIOptions.setVisualization(true);
+	    //marioAIOptions.setFPS(24);
+	    //System.out.println("LearningTrack best agent = " + agent);
+	    marioAIOptions.setAgent(agent);
+	    BasicTask basicTask = new BasicTask(marioAIOptions);
+	    basicTask.setOptionsAndReset(marioAIOptions);
+	    //System.out.println("basicTask = " + basicTask);
+	    //System.out.println("agent = " + agent);
+	
+	    boolean verbose = false;
+	    if (!basicTask.runSingleEpisode(1))  // make evaluation on the same episode once
+	    {
+	        System.out.println("MarioAI: out of computational time per action! Agent disqualified!");
+	    }
+	    EvaluationInfo evaluationInfo = basicTask.getEvaluationInfo();
+	    //System.out.println(evaluationInfo.toString());
+	
+	    int f = evaluationInfo.computeWeightedFitness();
+	    ((SNSLearningAgent)learningAgent).writeLog("SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
+	    if (verbose)
+	    {
+	        System.out.println("Intermediate SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
+	    }
+	
+	    return f;
 	}
-}
+	
+	private static void EvaluateBatch(Map<String, Object> parameters)
+	{
+		int ld = (int) parameters.get(EAParameters.DIFFICULTY);//Integer.parseInt(line.getOptionValue("ld", "1"));
+		int turns = 5;
+		System.out.println("AGENT EVALUATION");
+		
+		//MarioAIOptions[] instances = new MarioAIOptions[5];
+		MarioAIOptions marioOpts;
+		/*
+		 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
+		 */
+		@SuppressWarnings("unchecked") //otherwise the compiler warns against this cast
+		List<SNSLearningAgent> agents = (List<SNSLearningAgent>) parameters.get(EAParameters.AGENTS);
+		SNSLearningAgent firstAgent = agents.get(0);
+		
+		/*agents[0] = new SNSLearningAgent("RuleBased", "smartCross", "smallElite");
+		agents[1] = new SNSLearningAgent("UniformProb", "smartCross", "smallElite");
+		agents[2] = new SNSLearningAgent("RJSProb", "smartCross", "smallElite");
+		agents[3] = new SNSLearningAgent("RSJProb", "smartCross", "smallElite");*/
+		
+		for(SNSLearningAgent ag : agents)
+		{
+			String mes = "Evaluation for agent: " + ag.agentType;
+			System.out.println(mes);
+			appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
+			
+			System.out.println("Agent " + ag.agentType +" started.");
+			float totalSum = 0;
+			//for(int i = 0; i < instances.length; i++)
+			{
+				float totalTrackSum = 0;
+				for(int turn = 0; turn < turns; turn++)
+				{
+					System.out.println("\tInstance level "+ ld +" started. turn " + turn);
+					String[] args2 = new String[1];
+					marioOpts = new MarioAIOptions(args2);
+					marioOpts.setAgent(ag);
+					marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
+					//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
+				    //System.out.println("main.learningAgent = " + learningAgent + " iteration " + i);
+				    
+				    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
+				    totalTrackSum += finalScore;
+				    System.out.println("\tInstance finished. Final Score = " + finalScore);
+				}
+				float trackAverage = totalTrackSum/turns;
+				mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
+				appendMessage("AgentEvaluation_LD_" + ld + "_" + firstAgent.getMaxGenerations() + ".txt", mes);
+				totalSum += trackAverage;
+			}
+			//float totalAverage = totalSum;
+			//mes = "Average Total Score " + totalAverage + " and Total Score " + totalSum + "\n";
+			//appendMessage("AgentEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
+			
+			System.out.println("Agent " + ag.agentType +" finished.");
+		}
+	}
 
 	private static void EvaluateConverge(String[] args)
 	{
@@ -367,7 +370,9 @@ private static void EvaluateBatch(Map<String, Object> parameters)
 		options.addOption("m", EAParameters.MUTATION_PROB, true, "Probability of mutating one gene (flipping one bit)");
 		options.addOption("k", EAParameters.TOURNAMENT_SIZE, true, "Number of tournament participants");
 		
-		options.addOption("ld", "difficulty", true, "Difficulty level (1-5)");
+		options.addOption("ld", EAParameters.DIFFICULTY, true, "Difficulty level (1-5)");
+		
+		options.addOption("i", "parameters-input", true, "Path to xml file with the parameters");
 		
 		CommandLine line = null;
 		CommandLineParser parser = new DefaultParser();
@@ -385,17 +390,27 @@ private static void EvaluateBatch(Map<String, Object> parameters)
 	    //the parameters
 	    Map<String, Object> parameters = EAParameters.parametersFromCommandLine(line);
 	    
-	    System.out.println("Parsed paramz:");
-	    for(Entry<String, Object> param: parameters.entrySet()){
-	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue()));
-	    }
-
-		
 		if(line.hasOption(EAParameters.GENERATIONS))
 		{
 			SNSLearningAgent.generations = Integer.parseInt(line.getOptionValue(EAParameters.GENERATIONS));
 			System.out.println("Setting generations to " + SNSLearningAgent.generations);
 		}
+		
+		if(line.hasOption("parameters-input")){
+			System.out.println("Will read parameters from xml file, ignoring the ones passed via cmd line.");
+			try {
+				parameters = EAParameters.parametersFromFile(line.getOptionValue("parameters-input"));
+			} catch (Exception e) {
+				System.err.println("An error has occurred. Program will terminate");
+				e.printStackTrace();
+				System.exit(0);
+			}
+		}
+		
+		System.out.println("Parsed paramz:");
+	    for(Entry<String, Object> param: parameters.entrySet()){
+	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue()));
+	    }
 	    
 	    
 		//EvaluateCross(args);

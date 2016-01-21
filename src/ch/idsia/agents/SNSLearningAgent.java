@@ -318,4 +318,8 @@ public class SNSLearningAgent implements LearningAgent
 	{
 		agent.setObservationDetails(rfWidth, rfHeight, egoRow, egoCol);
 	}
+	
+	public String toString(){
+		return String.format("(%s, %s, %s)", agentType, crossType, breederType);
+	}
 }
