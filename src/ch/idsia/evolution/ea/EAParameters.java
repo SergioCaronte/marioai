@@ -38,6 +38,8 @@ public class EAParameters {
 	
 	public static final String DIFFICULTY = "difficulty";
 	
+	public static final String REPETITIONS = "repetitions";
+	
 	private static Set<String> integerParams = null;
 	private static Set<String> floatParams = null;
 	
@@ -52,6 +54,7 @@ public class EAParameters {
 			integerParams.add(POP_SIZE);
 			integerParams.add(TOURNAMENT_SIZE);
 			integerParams.add(DIFFICULTY);
+			integerParams.add(REPETITIONS);
 		}
 		return integerParams;
 	}
@@ -82,6 +85,8 @@ public class EAParameters {
 		params.put(TOURNAMENT_SIZE, 2);
 		params.put(CROSSOVER_PROB, .95f);
 		params.put(MUTATION_PROB, .001f);
+		params.put(REPETITIONS, 5);
+		params.put(DIFFICULTY, 1);
 		
 		//constructs the list of default agents
 		List<SNSLearningAgent> agents = new ArrayList<>();
@@ -92,8 +97,6 @@ public class EAParameters {
 		
 		//finally inserts the agents in the parameters
 		params.put(AGENTS, agents);
-		
-		params.put(DIFFICULTY, 1);
 		
 		return params;
 	}
@@ -125,6 +128,14 @@ public class EAParameters {
 		
 		if(line.hasOption(MUTATION_PROB)){
 			params.put(MUTATION_PROB, Float.parseFloat(line.getOptionValue(MUTATION_PROB)));
+		}
+		
+		if(line.hasOption(REPETITIONS)){
+			params.put(REPETITIONS, Integer.parseInt(line.getOptionValue(REPETITIONS)));
+		}
+		
+		if(line.hasOption(DIFFICULTY)){
+			params.put(DIFFICULTY, Integer.parseInt(line.getOptionValue(DIFFICULTY)));
 		}
 		
 		
