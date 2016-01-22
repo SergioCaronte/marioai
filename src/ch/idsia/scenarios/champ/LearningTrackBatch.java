@@ -96,12 +96,21 @@ public final class LearningTrackBatch
 	    //marioAIOptions.setVisualization(true);
 	    //marioAIOptions.setFPS(24);
 	    //System.out.println("LearningTrack best agent = " + agent);
+	    
+	    //UNCOMMENT the two lines below to run the best agent with GUI
+	    //marioAIOptions.reset();
+	    //marioAIOptions.setArgs("-ld " + SNSLearningAgent.difficulty + " -fps 60");	//I wanna see the best agent
+	    
 	    marioAIOptions.setAgent(agent);
+	    
 	    BasicTask basicTask = new BasicTask(marioAIOptions);
 	    basicTask.setOptionsAndReset(marioAIOptions);
+	    
+	    //System.out.println(marioAIOptions.asString());
 	    //System.out.println("basicTask = " + basicTask);
 	    //System.out.println("agent = " + agent);
 	
+	    System.out.println("Will run best agent.");
 	    boolean verbose = false;
 	    if (!basicTask.runSingleEpisode(1))  // make evaluation on the same episode once
 	    {
@@ -111,7 +120,7 @@ public final class LearningTrackBatch
 	    //System.out.println(evaluationInfo.toString());
 	
 	    int f = evaluationInfo.computeWeightedFitness();
-	    ((SNSLearningAgent)learningAgent).writeLog("SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
+	    //((SNSLearningAgent)learningAgent).writeLog("SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
 	    if (verbose)
 	    {
 	        System.out.println("Intermediate SCORE = " + f + ";\n Details: " + evaluationInfo.toString());
@@ -123,7 +132,7 @@ public final class LearningTrackBatch
 	private static void EvaluateBatch(Map<String, Object> parameters)
 	{
 		int ld = (int) parameters.get(EAParameters.DIFFICULTY);//Integer.parseInt(line.getOptionValue("ld", "1"));
-		int turns = 5;
+		int turns = (int) parameters.get(EAParameters.REPETITIONS);
 		System.out.println("AGENT EVALUATION");
 		
 		//MarioAIOptions[] instances = new MarioAIOptions[5];
@@ -142,7 +151,7 @@ public final class LearningTrackBatch
 		agents[1] = new SNSLearningAgent("UniformProb", "smartCross", "smallElite");
 		agents[2] = new SNSLearningAgent("RJSProb", "smartCross", "smallElite");
 		agents[3] = new SNSLearningAgent("RSJProb", "smartCross", "smallElite");*/
-		
+		System.out.println("REPETITIONS " + SNSLearningAgent.repetitions);
 		for(SNSLearningAgent ag : agents)
 		{
 			String mes = "Evaluation for agent: " + ag.agentType;
@@ -154,20 +163,20 @@ public final class LearningTrackBatch
 			//for(int i = 0; i < instances.length; i++)
 			
 			float totalTrackSum = 0;
-			for(int turn = 0; turn < turns; turn++)
+			for(int turn = 0; turn < SNSLearningAgent.repetitions; turn++)
 			{
-				System.out.println("\tInstance level "+ ld +" started. turn " + turn);
+				System.out.println("\tInstance level "+ ld +" started. Repetition #" + turn);
 				String[] args2 = new String[1];
 				marioOpts = new MarioAIOptions(args2);
 				marioOpts.setAgent(ag);
 				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
 				//marioOpts.setArgs("-ld " + ld + " -fps 60");
 				//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
-			    System.out.println("evalSubm");
+			    //System.out.println("Evaluating agent " + ag);
 			    
 			    float finalScore = LearningTrackBatch.evaluateSubmission(marioOpts, ag);
 			    totalTrackSum += finalScore;
-			    System.out.println("\tInstance finished. Final Score = " + finalScore);
+			    System.out.println(String.format("\tRun #%d of agent %s finished. Final Score = %f", turn, ag, finalScore));
 			}
 			float trackAverage = totalTrackSum/turns;
 			mes = "Average Score " + trackAverage + " Track " + ld + "\n\n";
@@ -178,7 +187,7 @@ public final class LearningTrackBatch
 			//mes = "Average Total Score " + totalAverage + " and Total Score " + totalSum + "\n";
 			//appendMessage("AgentEvaluation_" + agents[0].getMaxGenerations() + ".txt", mes);
 			
-			System.out.println("Agent " + ag.agentType +" finished.");
+			System.out.println(String.format("Agent %s finished. Average score: %f", ag, trackAverage));
 		}
 	}
 
@@ -375,6 +384,7 @@ public final class LearningTrackBatch
 		options.addOption("k", EAParameters.TOURNAMENT_SIZE, true, "Number of tournament participants");
 		
 		options.addOption("ld", EAParameters.DIFFICULTY, true, "Difficulty level (1-5)");
+		options.addOption("r", EAParameters.REPETITIONS, true, "Number of GA repetitions");
 		
 		options.addOption("i", "parameters-input", true, "Path to xml file with the parameters");
 		
@@ -386,7 +396,7 @@ public final class LearningTrackBatch
 	    }
 	    catch( ParseException exp ) {
 	        // oops, something went wrong
-	        System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
+	        System.err.println( "Cmd line parsing failed.  Reason: " + exp.getMessage() );
 	        System.err.println( "Exiting");
 	        System.exit(0);
 	    }
@@ -411,10 +421,10 @@ public final class LearningTrackBatch
 			}
 		}
 		
-		System.out.println("Parsed paramz:");
+		/*System.out.println("Parsed paramz:");
 	    for(Entry<String, Object> param: parameters.entrySet()){
 	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue()));
-	    }
+	    }*/
 	    
 	    
 		//EvaluateCross(args);
@@ -422,6 +432,7 @@ public final class LearningTrackBatch
 		EvaluateBatch(parameters);
 		//EvaluateConverge(args);
 		
-	    System.exit(0);
+		System.out.println("FINISHED");
+	    //System.exit(0);
 	}
 }
