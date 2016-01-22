@@ -6,6 +6,7 @@
 package ch.idsia.agents;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,6 +25,8 @@ public class SNSLearningAgent implements LearningAgent
 	public static int generations = 1000;
 	public static int populationSize = 100;
 	public static int tournamentSize = 2;
+	public static int repetitions = 5;
+	public static int difficulty = 1;
 	
 	public static float crossoverProb = .90f;
 	public static float mutationProb = .001f;
@@ -83,6 +86,18 @@ public class SNSLearningAgent implements LearningAgent
 		ea.generateBehavior = breederType;
 		
 		timeStamp = new SimpleDateFormat("MMdd_HHmm").format(new Date());
+
+		try{
+			File theDir = new File("evolution");
+			if (theDir.mkdir()){
+				System.out.println("Directory 'evolution' created.");
+			}
+		}
+		catch (SecurityException e){
+			System.err.println("Could not create directory 'evolution'. Exiting.");
+			e.printStackTrace();
+		}
+		
 		bestScore = 0;
 	}
 	
@@ -95,8 +110,12 @@ public class SNSLearningAgent implements LearningAgent
 		generations = (int) parameters.get(EAParameters.GENERATIONS);
 		populationSize = (int) parameters.get(EAParameters.POP_SIZE);
 		tournamentSize = (int) parameters.get(EAParameters.TOURNAMENT_SIZE);
+		difficulty = (int) parameters.get(EAParameters.DIFFICULTY);
+		repetitions = (int) parameters.get(EAParameters.REPETITIONS);
+		
 		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
 		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
+		
 	}
 	
 	public void learnTilConverge()

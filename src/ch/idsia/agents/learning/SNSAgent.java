@@ -354,6 +354,7 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	        	saveRuleTable(id);
 	        
 		} catch (IOException e) {
+			System.err.println("An error has occurred while attempting to save DNA of best agent:");
 			e.printStackTrace();
 		}
 	}
