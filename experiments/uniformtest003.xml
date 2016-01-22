@@ -1,12 +1,12 @@
 <experiment>
 	<parameters>
 		<generations value="10000" />
-		<pop-size value="30" />
+		<pop-size value="100" />
 		<tournament-size value="2" />
-		<crossover-prob value=".99" />
-		<mutation-prob value=".005" />
-		<difficulty value="2" />
-		<repetitions value="2" />
+		<crossover-prob value=".90" />
+		<mutation-prob value=".05" />
+		<difficulty value="1" />
+		<repetitions value="30" />
 	</parameters>
 	
 	<agents>
