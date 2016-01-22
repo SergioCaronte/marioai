@@ -114,6 +114,8 @@ public class SNSEA implements EA
 			smallElite();
 		else if(generateBehavior.equals("Competition"))
 			competition();
+		else if (generateBehavior.equals("singleEliteTournament"))
+			singleEliteTournament();
 		else
 			System.out.println("WARNING: Generate Behavior not defined.");
 	}
