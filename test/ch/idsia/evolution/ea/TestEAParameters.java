@@ -25,6 +25,7 @@ public class TestEAParameters {
 		assertTrue(intParams.contains(EAParameters.DIFFICULTY));
 		assertTrue(intParams.contains(EAParameters.REPETITIONS));
 		assertTrue(intParams.contains(EAParameters.TOURNAMENT_SIZE));
+		assertTrue(intParams.contains(EAParameters.ELITISM));
 	}
 
 	@Test
@@ -44,6 +45,7 @@ public class TestEAParameters {
 		assertEquals(1, (int)params.get(EAParameters.DIFFICULTY));
 		assertEquals(5, (int)params.get(EAParameters.REPETITIONS));
 		assertEquals(2, (int)params.get(EAParameters.TOURNAMENT_SIZE));
+		assertEquals(1, (int)params.get(EAParameters.ELITISM));
 		
 		assertEquals("crossover", .95f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .001f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);
@@ -80,6 +82,7 @@ public class TestEAParameters {
 		assertEquals(3, (int)params.get(EAParameters.DIFFICULTY));
 		assertEquals(30, (int)params.get(EAParameters.REPETITIONS));
 		assertEquals(2, (int)params.get(EAParameters.TOURNAMENT_SIZE));
+		assertEquals(5, (int)params.get(EAParameters.ELITISM));
 		
 		assertEquals("crossover", .60f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .005f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);
@@ -87,10 +90,10 @@ public class TestEAParameters {
 		@SuppressWarnings("unchecked")
 		List<SNSLearningAgent> agents = (List<SNSLearningAgent>) params.get(EAParameters.AGENTS);
 		
-		//compares the attributes of the 4 default agents
+		//compares the attributes of the agents
 		assertEquals("RuleBased", agents.get(0).agentType);
 		assertEquals("smartCross", agents.get(0).crossType);
-		assertEquals("singleEliteTournament", agents.get(0).breederType);
+		assertEquals("tournamentWithElitism", agents.get(0).breederType);
 	}
 
 }

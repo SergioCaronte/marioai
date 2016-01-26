@@ -6,11 +6,12 @@
 		<crossover-prob value=".60" />
 		<mutation-prob value=".005" />
 		<difficulty value="3" />
+		<elitism value="5" />
 		<repetitions value="30" />
 	</parameters>
 	
 	<agents>
-		<agent type="RuleBased" crossover="smartCross" elitism="singleEliteTournament" />
+		<agent type="RuleBased" crossover="smartCross" selection="tournamentWithElitism" />
 	</agents>
 	
 </experiment>

@@ -25,6 +25,8 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	private int mutRenewChance = 10;
 	private int mutSwapChance = 20;
 	
+	public static final int DNA_LENGTH = 3000;
+	
 	public String behavior = "";
 	
 	public SNSAgent(String behavior)

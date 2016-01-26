@@ -10,7 +10,7 @@
 	</parameters>
 	
 	<agents>
-		<agent type="UniformProb" crossover="smartCross" elitism="singleEliteTournament" />
+		<agent type="UniformProb" crossover="smartCross" selection="tournamentWithElitism" />
 	</agents>
 	
 </experiment>

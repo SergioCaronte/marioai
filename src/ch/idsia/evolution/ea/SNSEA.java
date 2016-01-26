@@ -19,13 +19,13 @@ public class SNSEA implements EA
 	private final Evolvable[] population;
 	// array of calculated fitness
 	private final float[] fitness;
-	// number of individuals considered in reproduction.
-	private final int elite;
+	// number of top individuals automatically passed to new generation.
+	private int elite;
 	// object needed to evaluate agent
 	private final Task task;
-	// cross type { zipperCross, splitCross, smartCross }
+	// cross type { zipperCross, splitCross, freeSplitCross, smartCross }
 	public String crossBehavior = "zipperCross";
-	// generation type { halfElite, quarterElite, quarterEliteMigration, smallElit }
+	// generation type { halfElite, quarterElite, quarterEliteMigration, smallElite, tournamentWithElitism }
 	public String generateBehavior = "halfElite";
 	// random generator
 	private Random R = null;
@@ -42,6 +42,7 @@ public class SNSEA implements EA
 		maxScore = new ArrayList<Float>();
 		minScore = new ArrayList<Float>();
 		
+		this.elite = 1;
 		this.populationSize = populationSize;
 		// start population array
 		this.population = new Evolvable[populationSize];
@@ -57,6 +58,10 @@ public class SNSEA implements EA
 	    this.R = new Random();
 	}
 	
+	public void setRandomNumberGenerator(Random r){
+		this.R = r;
+	}
+	
 	@Override
 	public Evolvable[] getBests() 
 	{
@@ -67,6 +72,18 @@ public class SNSEA implements EA
 	public float[] getBestFitnesses() 
 	{
 		return new float[]{fitness[0]};
+	}
+	
+	
+	/**
+	 * Returns an individual according to its index
+	 * If they're sorted by fitness (after a sortPopulationByFitness)
+	 * then index 0 returns the best individual, 1 the second best and so on
+	 * @param index
+	 * @return
+	 */
+	public Evolvable getIndividual(int index){
+		return population[index];
 	}
 
 	public void evaluateGeneration()
@@ -83,8 +100,8 @@ public class SNSEA implements EA
 		
 		float mean = 0;
 		for (int i = 0; i < populationSize; i++)
-			mean += fitness[i] * 0.01;
-		meanScore.add(mean);
+			mean += fitness[i];
+		meanScore.add(mean / populationSize);
 	}
 	
 	private void evaluate(int which)
@@ -114,10 +131,10 @@ public class SNSEA implements EA
 			smallElite();
 		else if(generateBehavior.equals("Competition"))
 			competition();
-		else if (generateBehavior.equals("singleEliteTournament"))
-			singleEliteTournament();
+		else if (generateBehavior.equals("tournamentWithElitism"))
+			tournamentWithElitism();
 		else
-			System.out.println("WARNING: Generate Behavior not defined.");
+			System.out.println(String.format("WARNING: Generate Behavior '%s' not recognized.", generateBehavior));
 	}
 	
 	public void competition()
@@ -157,7 +174,7 @@ public class SNSEA implements EA
 	 * @param size number of tournament participants
 	 * @return
 	 */
-	private int tournament(int size) {
+	public int tournament(int size) {
 		
 		int best = 0;
 		float bestFitness = Float.NEGATIVE_INFINITY;
@@ -255,20 +272,34 @@ public class SNSEA implements EA
 	 * Generates the next generation via tournament selection and elitism of a single individual
 	 * TODO: make this method be called
 	 */
-	public void singleEliteTournament(){
+	public void tournamentWithElitism(){
 		Evolvable spring[] = new Evolvable[populationSize];
-		spring[0] = population[0];	//elite goes directly to next generation
 		
-		for (int i = 1; i < populationSize; i+=2) {
+		//elite individuals go directly to new population
+		for (int i = 0; i < SNSLearningAgent.elitism; i++){
+			spring[i] = population[i];	
+		}
+		
+		//other individuals are selected via tournament
+		for (int i = SNSLearningAgent.elitism; i < populationSize; i+=2) {
 			//parents selected via tournament
 			int p1 = tournament(SNSLearningAgent.tournamentSize);	
 			int p2 = tournament(SNSLearningAgent.tournamentSize);
 			while(p1 == p2)	p2 = tournament(SNSLearningAgent.tournamentSize);
 			
 			//performs crossover if probability is matched
-			if(Math.random() < SNSLearningAgent.crossoverProb){
-				spring[i] = cross(population[p1], population[p2]);
-				if (i+1 < populationSize) spring[i+1] = cross(population[p2], population[p1]);
+			if(R.nextFloat() < SNSLearningAgent.crossoverProb){
+				if (crossBehavior.equals("freeSplitCross")){
+					int point = R.nextInt(SNSAgent.DNA_LENGTH);
+					
+					spring[i] = cross(population[p1], population[p2], point);
+					if (i+1 < populationSize) spring[i+1] = cross(population[p2], population[p1], point);
+				}
+				else {
+					spring[i] = cross(population[p1], population[p2]);
+					if (i+1 < populationSize) spring[i+1] = cross(population[p2], population[p1]);
+				}
+				
 			}
 			else{
 				spring[i] = population[p1];
@@ -276,10 +307,10 @@ public class SNSEA implements EA
 			}
 			
 			//performs mutation if probability is reached
-			if(Math.random() < SNSLearningAgent.mutationProb){
+			if(R.nextFloat() < SNSLearningAgent.mutationProb){
 				spring[i].mutate();
 			}
-			if(i+1 < populationSize && Math.random() < SNSLearningAgent.mutationProb){
+			if(i+1 < populationSize && R.nextFloat() < SNSLearningAgent.mutationProb){
 				spring[i+1].mutate();
 			}
 	    }
@@ -288,6 +319,51 @@ public class SNSEA implements EA
 		for(int i = 1; i < populationSize; i++) {
 			population[i] = spring[i];
 		}
+	}
+	
+	/**
+	 * Performs crossover between two parents and generate ONE individual
+	 * If crossBehavior is splitCross or freeSplitCross, then 
+	 * it will use the crossoverPoint received as parameter
+	 * @param parent1
+	 * @param parent2
+	 * @param crossoverpoint point at which chromosomes are swapped (for [free]splitCross only)
+	 * @return
+	 */
+	public Evolvable cross(Evolvable parent1, Evolvable parent2, int crossoverPoint)
+	{
+		if(((SNSAgent)parent1).getBehavior().equals("RuleBased"))
+		{	
+			if(crossBehavior.equals("zipperCross"))
+				return ruleZipperCross(parent1, parent2);
+			else if(crossBehavior.equals("splitCross"))
+				return ruleSplitCross(parent1, parent2, crossoverPoint);
+			else if(crossBehavior.equals("smartCross"))
+				return ruleSplitCross(parent1, parent2, crossoverPoint);
+			else
+				System.out.println("WARNING: Cross Behavior not defined.");
+		}
+		else
+		{
+			if(crossBehavior.equals("zipperCross"))
+				return zipperCross(parent1, parent2);
+			
+			else if (crossBehavior.equals("splitCross"))
+				return splitCross(parent1, parent2, crossoverPoint);
+			
+			else if (crossBehavior.equals("freeSplitCross")){
+				return splitCross(parent1, parent2, crossoverPoint);
+			}
+			
+			else if(crossBehavior.equals("smartCross")) {
+				int split = ((SNSAgent)parent1).getCurrentMove() - R.nextInt(30);
+				return splitCross(parent1, parent2, split);
+			}
+			else
+				System.out.println("WARNING: Cross Behavior not defined.");
+		}
+
+		return zipperCross(parent1, parent2);
 	}
 	
 	/**
@@ -316,8 +392,11 @@ public class SNSEA implements EA
 			int split = R.nextInt(1000) + 100;
 			if(crossBehavior.equals("zipperCross"))
 				return zipperCross(parent1, parent2);
-			else if(crossBehavior.equals("splitCross"))
+			else if (crossBehavior.equals("splitCross"))
 				return splitCross(parent1, parent2, split);
+			else if (crossBehavior.equals("freeSplitCross")){
+				return splitCross(parent1, parent2, R.nextInt(3000));
+			}
 			else if(crossBehavior.equals("smartCross"))
 			{
 				split = ((SNSAgent)parent1).getCurrentMove() - R.nextInt(30);

@@ -25,6 +25,7 @@ public class SNSLearningAgent implements LearningAgent
 	public static int generations = 1000;
 	public static int populationSize = 100;
 	public static int tournamentSize = 2;
+	public static int elitism = 1;
 	public static int repetitions = 5;
 	public static int difficulty = 1;
 	
@@ -77,7 +78,7 @@ public class SNSLearningAgent implements LearningAgent
 		reset();
 		ea = new SNSEA(learningTask, agent, populationSize);
 		/*
-		 * Crossover: splitCross, zipperCross
+		 * Crossover: splitCross, zipperCross, freeSplitCross
 		 */
 		ea.crossBehavior = crossType;
 		/*
@@ -102,8 +103,8 @@ public class SNSLearningAgent implements LearningAgent
 	}
 	
 	/**
-	 * Sets generations, population, crossover probability and mutation probability 
-	 * according to the parameters
+	 * Configures the parameters of the Genetic Algorithm according to 
+	 * the received ones
 	 * @param parameters
 	 */
 	public static void setParameters(Map<String, Object> parameters){
@@ -112,6 +113,7 @@ public class SNSLearningAgent implements LearningAgent
 		tournamentSize = (int) parameters.get(EAParameters.TOURNAMENT_SIZE);
 		difficulty = (int) parameters.get(EAParameters.DIFFICULTY);
 		repetitions = (int) parameters.get(EAParameters.REPETITIONS);
+		elitism = (int) parameters.get(EAParameters.ELITISM);
 		
 		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
 		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
@@ -359,6 +361,6 @@ public class SNSLearningAgent implements LearningAgent
 	}
 	
 	public String toString(){
-		return String.format("(%s, %s, %s)", agentType, crossType, breederType);
+		return String.format("SNSLearningAgent (%s, %s, %s)", agentType, crossType, breederType);
 	}
 }

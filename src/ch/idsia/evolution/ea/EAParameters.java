@@ -26,6 +26,7 @@ public class EAParameters {
 	public static final String GENERATIONS = "generations";
 	public static final String POP_SIZE = "pop-size";
 	public static final String TOURNAMENT_SIZE = "tournament-size";
+	public static final String ELITISM = "elitism";
 	
 	public static final String CROSSOVER_PROB = "crossover-prob";
 	public static final String MUTATION_PROB = "mutation-prob";
@@ -34,7 +35,7 @@ public class EAParameters {
 	
 	public static final String AGENT_TYPE = "type";
 	public static final String AGENT_CROSSOVER = "crossover";
-	public static final String AGENT_ELITISM = "elitism";
+	public static final String AGENT_SELECTION = "selection";
 	
 	public static final String DIFFICULTY = "difficulty";
 	
@@ -53,8 +54,10 @@ public class EAParameters {
 			integerParams.add(GENERATIONS);
 			integerParams.add(POP_SIZE);
 			integerParams.add(TOURNAMENT_SIZE);
+			integerParams.add(ELITISM);
 			integerParams.add(DIFFICULTY);
 			integerParams.add(REPETITIONS);
+			
 		}
 		return integerParams;
 	}
@@ -83,6 +86,7 @@ public class EAParameters {
 		params.put(GENERATIONS, 50);
 		params.put(POP_SIZE, 30);
 		params.put(TOURNAMENT_SIZE, 2);
+		params.put(ELITISM, 1);
 		params.put(CROSSOVER_PROB, .95f);
 		params.put(MUTATION_PROB, .001f);
 		params.put(REPETITIONS, 5);
@@ -120,6 +124,10 @@ public class EAParameters {
 		
 		if(line.hasOption(TOURNAMENT_SIZE)){
 			params.put(TOURNAMENT_SIZE, Integer.parseInt(line.getOptionValue(TOURNAMENT_SIZE)));
+		}
+		
+		if(line.hasOption(ELITISM)){
+			params.put(ELITISM, Integer.parseInt(line.getOptionValue(ELITISM)));
 		}
 		
 		if(line.hasOption(CROSSOVER_PROB)){
@@ -194,7 +202,7 @@ public class EAParameters {
 					theAgents.add(new SNSLearningAgent(
 						e.getAttribute(AGENT_TYPE), 
 						e.getAttribute(AGENT_CROSSOVER), 
-						e.getAttribute(AGENT_ELITISM))
+						e.getAttribute(AGENT_SELECTION))
 					);
 					
 				}
