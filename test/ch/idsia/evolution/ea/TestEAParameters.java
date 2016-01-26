@@ -26,6 +26,7 @@ public class TestEAParameters {
 		assertTrue(intParams.contains(EAParameters.REPETITIONS));
 		assertTrue(intParams.contains(EAParameters.TOURNAMENT_SIZE));
 		assertTrue(intParams.contains(EAParameters.ELITISM));
+		assertFalse(intParams.contains(EAParameters.BASEDIR));
 	}
 
 	@Test
@@ -34,6 +35,7 @@ public class TestEAParameters {
 		
 		assertTrue(floatParams.contains(EAParameters.CROSSOVER_PROB));
 		assertTrue(floatParams.contains(EAParameters.MUTATION_PROB));
+		assertFalse(floatParams.contains(EAParameters.BASEDIR));
 	}
 
 	@Test
@@ -49,6 +51,8 @@ public class TestEAParameters {
 		
 		assertEquals("crossover", .95f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .001f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);
+		
+		assertEquals("unidentified", (String) params.get(EAParameters.BASEDIR));
 		
 		@SuppressWarnings("unchecked")
 		List<SNSLearningAgent> agents = (List<SNSLearningAgent>) params.get(EAParameters.AGENTS);
@@ -86,6 +90,9 @@ public class TestEAParameters {
 		
 		assertEquals("crossover", .60f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .005f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);
+		
+		assertEquals("testparams", (String) params.get(EAParameters.BASEDIR));
+		
 		
 		@SuppressWarnings("unchecked")
 		List<SNSLearningAgent> agents = (List<SNSLearningAgent>) params.get(EAParameters.AGENTS);
