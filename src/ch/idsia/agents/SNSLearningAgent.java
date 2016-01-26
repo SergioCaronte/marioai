@@ -22,6 +22,7 @@ import ch.idsia.tools.MarioAIOptions;
 
 public class SNSLearningAgent implements LearningAgent 
 {
+	//parameters
 	public static int generations = 1000;
 	public static int populationSize = 100;
 	public static int tournamentSize = 2;
@@ -32,18 +33,27 @@ public class SNSLearningAgent implements LearningAgent
 	public static float crossoverProb = .90f;
 	public static float mutationProb = .001f;
 	
+	public static String basedir = "unidentified";
+	
+	//directory to write the outputs
+	private String outputDir;
+	
 	// evolutionary agent
 	private SNSAgent agent;
 	public String agentType;
 	public String crossType;
 	public String breederType;
+	
 	// evolutionary algorithm
 	private SNSEA ea;
+	
 	// learning task evaluates the population
 	private LearningTask learningTask = null;
-	// save the best agent found so far
+	
+	// best agent found so far
 	private Agent bestAgent;
-	// save the best score found so far
+	
+	// best score found so far
 	private float bestScore = 0;
 
 	private long evaluationQuota; //common number of trials
@@ -65,6 +75,9 @@ public class SNSLearningAgent implements LearningAgent
 		this.agentType = agentType;
 		this.crossType = crossType;
 		this.breederType = breederType;
+		
+		this.outputDir = "evolution/unidentified";
+		
 		/*
 		 * Agent types: UniformProb, RJProb, RJSProb, RSJProb, RuleBased
 		 */
@@ -88,18 +101,11 @@ public class SNSLearningAgent implements LearningAgent
 		
 		timeStamp = new SimpleDateFormat("MMdd_HHmm").format(new Date());
 
-		try{
-			File theDir = new File("evolution");
-			if (theDir.mkdir()){
-				System.out.println("Directory 'evolution' created.");
-			}
-		}
-		catch (SecurityException e){
-			System.err.println("Could not create directory 'evolution'. Exiting.");
-			e.printStackTrace();
-		}
-		
 		bestScore = 0;
+	}
+	
+	public void setOutputDirectory(String path){
+		outputDir = path;
 	}
 	
 	/**
@@ -117,6 +123,8 @@ public class SNSLearningAgent implements LearningAgent
 		
 		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
 		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
+		
+		basedir = (String) parameters.get(EAParameters.BASEDIR);
 		
 	}
 	
@@ -178,6 +186,9 @@ public class SNSLearningAgent implements LearningAgent
 		
 	}
 		
+	/**
+	 * TODO: setExecutionID; setBaseDIR; testMARIO-RANDOM-SEED
+	 */
 	@Override
 	public void learn() 
 	{
@@ -200,8 +211,17 @@ public class SNSLearningAgent implements LearningAgent
 		log +="EA Generation Behavior: " + ea.generateBehavior + "\n";
 		log +="EA Cross Behavior: " + ea.crossBehavior + "\n";
 		log +="Agent Behavior: " + agent.getBehavior() + "\n";
-		 
-		for (int gen = 0; gen < SNSLearningAgent.generations; gen++)
+		log +="Parameters: \n";
+		log += String.format("generations: %d\n", generations);
+		log += String.format("population: %d\n", populationSize);
+		log += String.format("tournament size: %d\n", tournamentSize);
+		log += String.format("elitism: %d\n", elitism);
+		log += String.format("prob. crossover: %f\n", crossoverProb);
+		log += String.format("prob. mutation: %f\n", mutationProb);
+		log += String.format("level difficulty: %d\n", difficulty);
+		log += String.format("repetitions: %d\n", repetitions);
+		
+		for (int gen = 0; gen < generations; gen++)
 		{
 			ea.evaluateGeneration();
 			 
@@ -220,10 +240,11 @@ public class SNSLearningAgent implements LearningAgent
 			ea.nextGeneration();
 		}
 		// log name
-		logName = "evolution/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
+		logName = outputDir + "/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
 		// white log info
 		writeLog(log);
 		writeResult();
+		writeCurve();
 		// save best agent
 		if(bestAgent != null)
 		{
@@ -268,10 +289,11 @@ public class SNSLearningAgent implements LearningAgent
 	
 	public void writeCurve()
 	{
-		String fileName = "evolution/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_curve.csv";
+		String fileName = outputDir + "/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_curve.csv";
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true));
 			int size = ea.meanScore.size();
+			out.write("mean; min; max;\n");
 			for(int i = 0; i < size; i++)
 				out.write(String.format("%f; %f; %f;\n", ea.meanScore.get(i), ea.minScore.get(i), ea.maxScore.get(i)));
 			out.close();

@@ -28,6 +28,7 @@
 package ch.idsia.scenarios.champ;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -78,6 +79,7 @@ public final class LearningTrackBatch
 	
 	final static int populationSize = 100;
 	
+	//TODO check best fitness of evolution vs testing...
 	private static int evaluateSubmission(MarioAIOptions marioAIOptions, LearningAgent learningAgent)
 	{
 		// provides the level
@@ -98,8 +100,8 @@ public final class LearningTrackBatch
 	    //System.out.println("LearningTrack best agent = " + agent);
 	    
 	    //UNCOMMENT the two lines below to run the best agent with GUI
-	    //marioAIOptions.reset();
-	    //marioAIOptions.setArgs("-ld " + SNSLearningAgent.difficulty + " -fps 60");	//I wanna see the best agent
+	    marioAIOptions.reset();
+	    marioAIOptions.setArgs("-ld " + SNSLearningAgent.difficulty + " -fps 60");	//I wanna see the best agent
 	    
 	    marioAIOptions.setAgent(agent);
 	    
@@ -133,6 +135,7 @@ public final class LearningTrackBatch
 	{
 		int ld = (int) parameters.get(EAParameters.DIFFICULTY);//Integer.parseInt(line.getOptionValue("ld", "1"));
 		int turns = (int) parameters.get(EAParameters.REPETITIONS);
+		
 		System.out.println("AGENT EVALUATION");
 		
 		//MarioAIOptions[] instances = new MarioAIOptions[5];
@@ -165,6 +168,32 @@ public final class LearningTrackBatch
 			float totalTrackSum = 0;
 			for(int turn = 0; turn < SNSLearningAgent.repetitions; turn++)
 			{
+				String experimentDir = "evolution/";
+				try{
+					 experimentDir = String.format(
+						"evolution/%s/rep%d/", 
+						(String) parameters.get(EAParameters.BASEDIR),
+						turn
+						
+					);
+					File theDir = new File(experimentDir);
+					if (theDir.mkdirs()){
+						System.out.println(String.format("Directory '%s' created.", experimentDir));
+					}
+					else {
+						System.out.println(String.format("Warning: Directory '%s' already exists.", experimentDir));
+					}
+					
+				}
+				catch (SecurityException e){
+					System.err.println("Could not create directory for the experiments. Exiting.");
+					e.printStackTrace();
+					System.exit(0);
+				}
+				
+				ag.setOutputDirectory(experimentDir);
+				
+				
 				System.out.println("\tInstance level "+ ld +" started. Repetition #" + turn);
 				String[] args2 = new String[1];
 				marioOpts = new MarioAIOptions(args2);
@@ -425,6 +454,17 @@ public final class LearningTrackBatch
 	    for(Entry<String, Object> param: parameters.entrySet()){
 	    	System.out.println(String.format("%s: %s", param.getKey(), param.getValue()));
 	    }*/
+		
+		try{
+			File theDir = new File("evolution");
+			if (theDir.mkdir()){
+				System.out.println("Directory 'evolution' created.");
+			}
+		}
+		catch (SecurityException e){
+			System.err.println("Could not create directory 'evolution'. Exiting.");
+			e.printStackTrace();
+		}
 	    
 	    
 		//EvaluateCross(args);

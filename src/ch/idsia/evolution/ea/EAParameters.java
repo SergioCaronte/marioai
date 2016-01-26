@@ -40,6 +40,7 @@ public class EAParameters {
 	public static final String DIFFICULTY = "difficulty";
 	
 	public static final String REPETITIONS = "repetitions";
+	public static final String BASEDIR = "basedir";
 	
 	private static Set<String> integerParams = null;
 	private static Set<String> floatParams = null;
@@ -91,6 +92,7 @@ public class EAParameters {
 		params.put(MUTATION_PROB, .001f);
 		params.put(REPETITIONS, 5);
 		params.put(DIFFICULTY, 1);
+		params.put(BASEDIR, "unidentified");
 		
 		//constructs the list of default agents
 		List<SNSLearningAgent> agents = new ArrayList<>();

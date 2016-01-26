@@ -270,7 +270,6 @@ public class SNSEA implements EA
 	
 	/**
 	 * Generates the next generation via tournament selection and elitism of a single individual
-	 * TODO: make this method be called
 	 */
 	public void tournamentWithElitism(){
 		Evolvable spring[] = new Evolvable[populationSize];
@@ -486,7 +485,7 @@ public class SNSEA implements EA
 		
 	}
 	
- 	private void sortPopulationByFitness()
+ 	public void sortPopulationByFitness()
 	{
 	    for (int i = 0; i < population.length; i++)
 	        for (int j = i + 1; j < population.length; j++)
