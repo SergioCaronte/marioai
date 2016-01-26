@@ -192,9 +192,6 @@ public class SNSLearningAgent implements LearningAgent
 		
 	}
 		
-	/**
-	 * TODO: testMARIO-RANDOM-SEED
-	 */
 	@Override
 	public void learn() 
 	{
@@ -233,7 +230,7 @@ public class SNSLearningAgent implements LearningAgent
 			ea.evaluateGeneration();
 			 
 			
-			System.out.print(String.format("%d-th generation - bestfitness: %6.3f\r", gen, ea.getBestFitnesses()[0]));
+			System.out.print(String.format("%d-th generation. seed=%d - bestfitness: %6.3f\r", gen, marioSeed, ea.getBestFitnesses()[0]));
 			//evaluate current generation
 			// if we have a new champion, we save it
 			if ((Agent) ea.getBests()[0] != bestAgent)
@@ -241,7 +238,7 @@ public class SNSLearningAgent implements LearningAgent
 				float fitn = ea.getBestFitnesses()[0];
 				//System.out.println("\t\tNew best with score " + fitn + " at generation " + gen);
 				log += "New best agent with score " + fitn + " at generation " + gen + "\n";
-				System.out.println("\nNew best agent with score " + fitn + " at generation " + gen + "\n");
+				//System.out.println("\nNew best agent with score " + fitn + " at generation " + gen + "\n");
 				bestScore = fitn;
 			    bestAgent = (Agent) ea.getBests()[0];
 			}
@@ -251,6 +248,7 @@ public class SNSLearningAgent implements LearningAgent
 			//System.out.println("best agent: " + ea.getBests()[0]);
 			//System.out.println("best fitness: " + ea.getBestFitnesses()[0]);
 		}
+		System.out.println();	//cleans-up line written during generations
 		// log name
 		logName = outputDir + "/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
 		// white log info
