@@ -26,7 +26,7 @@ public class TestEAParameters {
 		assertTrue(intParams.contains(EAParameters.REPETITIONS));
 		assertTrue(intParams.contains(EAParameters.TOURNAMENT_SIZE));
 		assertTrue(intParams.contains(EAParameters.ELITISM));
-		assertTrue(intParams.contains(EAParameters.MARIO_SEED));
+		//assertTrue(intParams.contains(EAParameters.MARIO_SEED));
 		assertFalse(intParams.contains(EAParameters.BASEDIR));
 	}
 
@@ -49,7 +49,7 @@ public class TestEAParameters {
 		assertEquals(5, (int)params.get(EAParameters.REPETITIONS));
 		assertEquals(2, (int)params.get(EAParameters.TOURNAMENT_SIZE));
 		assertEquals(1, (int)params.get(EAParameters.ELITISM));
-		assertEquals(0, (int)params.get(EAParameters.MARIO_SEED));
+		//assertEquals(0, (int)params.get(EAParameters.MARIO_SEED));
 		
 		assertEquals("crossover", .95f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .001f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);
@@ -89,7 +89,7 @@ public class TestEAParameters {
 		assertEquals(30, (int)params.get(EAParameters.REPETITIONS));
 		assertEquals(2, (int)params.get(EAParameters.TOURNAMENT_SIZE));
 		assertEquals(5, (int)params.get(EAParameters.ELITISM));
-		assertEquals(50, (int)params.get(EAParameters.MARIO_SEED));
+		//assertEquals(50, (int)params.get(EAParameters.MARIO_SEED));
 		
 		assertEquals("crossover", .60f, (float)params.get(EAParameters.CROSSOVER_PROB), .000001f);
 		assertEquals("mutation", .005f, (float)params.get(EAParameters.MUTATION_PROB), .000001f);

@@ -9,7 +9,7 @@
 		<difficulty value="1" />
 		<repetitions value="10" />
 		<basedir value="test" />
-		<marioseed value="1" />
+		<!--  <marioseed value="1" />  -->
 	</parameters>
 	
 	<agents>

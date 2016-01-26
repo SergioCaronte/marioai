@@ -40,7 +40,7 @@ public class EAParameters {
 	public static final String DIFFICULTY = "difficulty";
 	
 	public static final String REPETITIONS = "repetitions";
-	public static final String MARIO_SEED = "marioseed";
+	//public static final String MARIO_SEED = "marioseed";
 	public static final String BASEDIR = "basedir";
 	
 	private static Set<String> integerParams = null;
@@ -59,8 +59,7 @@ public class EAParameters {
 			integerParams.add(ELITISM);
 			integerParams.add(DIFFICULTY);
 			integerParams.add(REPETITIONS);
-			integerParams.add(MARIO_SEED);
-			
+			//integerParams.add(MARIO_SEED);
 		}
 		return integerParams;
 	}
@@ -94,7 +93,7 @@ public class EAParameters {
 		params.put(MUTATION_PROB, .001f);
 		params.put(REPETITIONS, 5);
 		params.put(DIFFICULTY, 1);
-		params.put(MARIO_SEED, 0);
+		//params.put(MARIO_SEED, 0);
 		params.put(BASEDIR, "unidentified");
 		
 		//constructs the list of default agents

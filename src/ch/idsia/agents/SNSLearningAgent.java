@@ -30,7 +30,7 @@ public class SNSLearningAgent implements LearningAgent
 	public static int elitism = 1;
 	public static int repetitions = 5;
 	public static int difficulty = 1;
-	public static int marioSeed = 0;
+	public static long marioSeed = 0;
 	
 	public static float crossoverProb = .90f;
 	public static float mutationProb = .001f;
@@ -122,13 +122,16 @@ public class SNSLearningAgent implements LearningAgent
 		difficulty = (int) parameters.get(EAParameters.DIFFICULTY);
 		repetitions = (int) parameters.get(EAParameters.REPETITIONS);
 		elitism = (int) parameters.get(EAParameters.ELITISM);
-		marioSeed = (int) parameters.get(EAParameters.MARIO_SEED);
+		//marioSeed = (int) parameters.get(EAParameters.MARIO_SEED);
 		
 		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
 		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
 		
 		basedir = (String) parameters.get(EAParameters.BASEDIR);
-		
+	}
+	
+	public void setMarioSeed(long seed){
+		marioSeed = seed;
 	}
 	
 	public void learnTilConverge()
@@ -230,7 +233,7 @@ public class SNSLearningAgent implements LearningAgent
 			ea.evaluateGeneration();
 			 
 			
-			System.out.print(gen + " generation\r");
+			System.out.print(String.format("%d-th generation - bestfitness: %6.3f\r", gen, ea.getBestFitnesses()[0]));
 			//evaluate current generation
 			// if we have a new champion, we save it
 			if ((Agent) ea.getBests()[0] != bestAgent)
@@ -245,8 +248,8 @@ public class SNSLearningAgent implements LearningAgent
 			//create next generation
 			ea.nextGeneration();
 			
-			System.out.println("best agent: " + ea.getBests()[0]);
-			System.out.println("best fitness: " + ea.getBestFitnesses()[0]);
+			//System.out.println("best agent: " + ea.getBests()[0]);
+			//System.out.println("best fitness: " + ea.getBestFitnesses()[0]);
 		}
 		// log name
 		logName = outputDir + "/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";

@@ -198,7 +198,7 @@ public final class LearningTrackBatch
 				}
 				
 				ag.setOutputDirectory(experimentDir);
-				
+				ag.setMarioSeed(turn);
 				
 				System.out.println("\tInstance level "+ ld +" started. Repetition #" + turn);
 				String[] args2 = new String[1];
