@@ -1,16 +1,18 @@
 <experiment>
 	<parameters>
-		<generations value="10000" />
+		<generations value="50" />
 		<pop-size value="30" />
 		<tournament-size value="2" />
-		<crossover-prob value=".99" />
-		<mutation-prob value=".005" />
-		<difficulty value="2" />
+		<elitism value="5" />
+		<crossover-prob value=".90" />
+		<mutation-prob value=".30" />
+		<difficulty value="1" />
 		<repetitions value="2" />
+		<basedir value="test" />
 	</parameters>
 	
 	<agents>
-		<agent type="UniformProb" crossover="smartCross" elitism="singleEliteTournament" />
+		<agent type="UniformProb" crossover="freeSplitCross" selection="tournamentWithElitism" />
 	</agents>
 	
 </experiment>
