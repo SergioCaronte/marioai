@@ -8,6 +8,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
+import util.MyRandom;
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.SNSLearningAgent;
 import ch.idsia.agents.learning.SNSAgent;
@@ -18,32 +19,6 @@ import ch.idsia.tools.MarioAIOptions;
 public class TestSNSEA {
 	
 	SNSEA ea;
-	
-	/**
-	 * Auxiliary class to help controlling the generation of random numbers
-	 * @author anderson
-	 *
-	 */
-	@SuppressWarnings("serial")	//avoid a warning regarding the serialization of this class
-	private class MyRandom extends Random{
-		
-		public int netxInt;
-		
-		public MyRandom(){
-			netxInt = -1;
-		}
-		
-		/**
-		 * Generates a predictable sequence of integers: 
-		 * netxInt modulo n 
-		 * @param n
-		 * @return
-		 */
-	 	public int nextInt(int n){
-	 		netxInt++;
-	 		return netxInt % n;
-	 	}
-	}
 	
 	@Before
 	public void setUp() throws Exception {
@@ -129,5 +104,5 @@ public class TestSNSEA {
 			assertEquals(kid2.getDna()[i], parent1.getDna()[i]);
 		}
 	}
-
+	
 }

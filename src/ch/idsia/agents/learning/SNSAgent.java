@@ -34,7 +34,7 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	    super(name);
 	    reset();
 	    R = new Random();
-	    dna = new int[3000];
+	    dna = new int[DNA_LENGTH];
 	    
 	    this.behavior = behavior;
 	    if(behavior.equals("RuleBased"))
@@ -49,7 +49,7 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	    }
 	    else
 	    {
-	    	for(int i = 0; i < 3000; i++)
+	    	for(int i = 0; i < DNA_LENGTH; i++)
 		    {
 		    	dna[i] = R.nextInt(63);
 		    }
@@ -80,7 +80,11 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	    
 	    reset();
 	    R = new Random();
-	    this.dna = new int[3000];
+	    this.dna = new int[DNA_LENGTH];
+	}
+	
+	public void setRandomNumberGenerator(Random r){
+		this.R = r;
 	}
 	
 	public String getBehavior()
@@ -92,18 +96,18 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 	public boolean[] getAction()
 	{	
 		if(behavior.equals("UniformProb"))
-			return getUniformProb(dna[cur++ %3000]);
+			return getUniformProb(dna[cur++ %DNA_LENGTH]);
 		else if(behavior.equals("RJProb"))
-			return getRJProb(dna[cur++ %3000]);
+			return getRJProb(dna[cur++ %DNA_LENGTH]);
 		else if(behavior.equals("RJSProb"))
-			return getRJSProb(dna[cur++ %3000]);
+			return getRJSProb(dna[cur++ %DNA_LENGTH]);
 		else if(behavior.equals("RSJProb"))
-			return getRSJProb(dna[cur++ %3000]);
+			return getRSJProb(dna[cur++ %DNA_LENGTH]);
 		else if(behavior.equals("RuleBased"))
 			return getRuleBased();
 		else
 			System.out.println("WARNING: Agent Behavior not defined.");
-		return getUniformProb(dna[cur++ %3000]);
+		return getUniformProb(dna[cur++ %DNA_LENGTH]);
 	}
 	
 	
@@ -261,7 +265,7 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 		if(rule_based != null)
 			mutateRB();
 		else
-			mutateProb();
+			mutateProb(100 + R.nextInt(200));
 	}
 	
 	private void mutateRB()
@@ -287,13 +291,13 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 		
 	}
 	
-	private void mutateProb()
+	private void mutateProb(int ammountGenes)
 	{
-		int mutation_count = 100 + R.nextInt(200);
+		//int mutation_count = 100 + R.nextInt(200);
 		
-		for(int i = 0; i < mutation_count; i++)
+		for(int i = 0; i < ammountGenes; i++)
 		{
-			int at = R.nextInt(3000);
+			int at = R.nextInt(DNA_LENGTH);
 			dna[at] = mutate(dna[at]);
 		}
 	}
@@ -348,7 +352,7 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 		BufferedWriter out;
 		try {
 			out = new BufferedWriter(new FileWriter("evolution/" + id + "_" + behavior + "_agent.txt", true));
-			for(int i = 0; i < 3000; i++)
+			for(int i = 0; i < DNA_LENGTH; i++)
 				out.write(dna[i] + "\n");
 	        out.close();
 	        
