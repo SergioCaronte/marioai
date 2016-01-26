@@ -1,0 +1,17 @@
+<experiment>
+	<parameters>
+		<generations value="1000" />
+		<pop-size value="100" />
+		<tournament-size value="5" />
+		<crossover-prob value=".90" />
+		<mutation-prob value=".20" />
+		<difficulty value="1" />
+		<repetitions value="30" />
+		<elitism value="1" />
+	</parameters>
+	
+	<agents>
+		<agent type="UniformProb" crossover="freeSplitCross" selection="tournamentWithElitism" />
+	</agents>
+	
+</experiment>
