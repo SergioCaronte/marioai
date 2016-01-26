@@ -347,11 +347,11 @@ public class SNSAgent extends BasicMarioAIAgent implements Evolvable, Agent
 		return rule_based.getRules();	
 	}
 	
-	public void saveDna(String id)
+	public void saveDna(String id, String basedir)
 	{
 		BufferedWriter out;
 		try {
-			out = new BufferedWriter(new FileWriter("evolution/" + id + "_" + behavior + "_agent.txt", true));
+			out = new BufferedWriter(new FileWriter(basedir + "/" + id + "_" + behavior + "_agent.txt", true));
 			for(int i = 0; i < DNA_LENGTH; i++)
 				out.write(dna[i] + "\n");
 	        out.close();

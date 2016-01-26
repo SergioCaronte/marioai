@@ -87,21 +87,27 @@ public final class LearningTrackBatch
 	    // it gives LearningAgent access to evaluator via method LearningTask.evaluate(Agent)
 	    learningAgent.setLearningTask(learningTask);  
 	    learningAgent.init();
+	    
 	    //Passing args to be saved into log
 	    ((SNSLearningAgent)learningAgent).setOpts(marioAIOptions);
+	    
 	    // it launches the training process. numberOfTrials happen here
 	    learningAgent.learn(); 
+	    
 	    // this agent will be evaluated
 	    Agent agent = learningAgent.getBestAgent();
-	
+	    
+	    System.out.println("Fitness of best agent is: " + ((SNSLearningAgent)learningAgent).getEvolutionaryAlgorithm().getBestFitnesses()[0]);
+	    System.out.println("best agent (EA) is: " + ((SNSLearningAgent)learningAgent).getEvolutionaryAlgorithm().getBests()[0]);
+	    System.out.println("best agent (evalSub) is: " + agent);
 	    // perform the gameplay task on the same level
 	    //marioAIOptions.setVisualization(true);
 	    //marioAIOptions.setFPS(24);
 	    //System.out.println("LearningTrack best agent = " + agent);
 	    
 	    //UNCOMMENT the two lines below to run the best agent with GUI
-	    marioAIOptions.reset();
-	    marioAIOptions.setArgs("-ld " + SNSLearningAgent.difficulty + " -fps 60");	//I wanna see the best agent
+	    //marioAIOptions.reset();
+	    //marioAIOptions.setArgs("-ld " + SNSLearningAgent.difficulty + " -fps 60");	//I wanna see the best agent
 	    
 	    marioAIOptions.setAgent(agent);
 	    
@@ -198,7 +204,7 @@ public final class LearningTrackBatch
 				String[] args2 = new String[1];
 				marioOpts = new MarioAIOptions(args2);
 				marioOpts.setAgent(ag);
-				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100");
+				marioOpts.setArgs("-ld " + ld + " -vis off -fps 100 -ls " + SNSLearningAgent.marioSeed);
 				//marioOpts.setArgs("-ld " + ld + " -fps 60");
 				//LearningAgent learningAgent = (LearningAgent) instances[i].getAgent();
 			    //System.out.println("Evaluating agent " + ag);

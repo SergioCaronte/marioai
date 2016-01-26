@@ -16,6 +16,7 @@ import java.util.Map;
 import ch.idsia.agents.learning.SNSAgent;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.benchmark.tasks.LearningTask;
+import ch.idsia.evolution.EA;
 import ch.idsia.evolution.ea.EAParameters;
 import ch.idsia.evolution.ea.SNSEA;
 import ch.idsia.tools.MarioAIOptions;
@@ -29,6 +30,7 @@ public class SNSLearningAgent implements LearningAgent
 	public static int elitism = 1;
 	public static int repetitions = 5;
 	public static int difficulty = 1;
+	public static int marioSeed = 0;
 	
 	public static float crossoverProb = .90f;
 	public static float mutationProb = .001f;
@@ -120,6 +122,7 @@ public class SNSLearningAgent implements LearningAgent
 		difficulty = (int) parameters.get(EAParameters.DIFFICULTY);
 		repetitions = (int) parameters.get(EAParameters.REPETITIONS);
 		elitism = (int) parameters.get(EAParameters.ELITISM);
+		marioSeed = (int) parameters.get(EAParameters.MARIO_SEED);
 		
 		crossoverProb = (float) parameters.get(EAParameters.CROSSOVER_PROB);
 		mutationProb = (float) parameters.get(EAParameters.MUTATION_PROB);
@@ -181,13 +184,13 @@ public class SNSLearningAgent implements LearningAgent
 		 // save best agent
 		 if(bestAgent != null)
 		 {
-			 ((SNSAgent)bestAgent).saveDna(timeStamp);
+			 ((SNSAgent)bestAgent).saveDna(timeStamp, outputDir);
 		 }
 		
 	}
 		
 	/**
-	 * TODO: setExecutionID; setBaseDIR; testMARIO-RANDOM-SEED
+	 * TODO: testMARIO-RANDOM-SEED
 	 */
 	@Override
 	public void learn() 
@@ -206,6 +209,7 @@ public class SNSLearningAgent implements LearningAgent
 		log += " -ll " + opts.getLevelLength();
 		log += " -lt " + opts.getLevelType();
 		log += " -ls " + opts.getLevelRandSeed();
+		assert opts.getLevelRandSeed() == marioSeed;
 		 
 		log +="\n";
 		log +="EA Generation Behavior: " + ea.generateBehavior + "\n";
@@ -225,19 +229,24 @@ public class SNSLearningAgent implements LearningAgent
 		{
 			ea.evaluateGeneration();
 			 
-			float fitn = ea.getBestFitnesses()[0];
+			
 			System.out.print(gen + " generation\r");
 			//evaluate current generation
 			// if we have a new champion, we save it
-			if (fitn > bestScore)
+			if ((Agent) ea.getBests()[0] != bestAgent)
 			{
+				float fitn = ea.getBestFitnesses()[0];
 				//System.out.println("\t\tNew best with score " + fitn + " at generation " + gen);
 				log += "New best agent with score " + fitn + " at generation " + gen + "\n";
+				System.out.println("\nNew best agent with score " + fitn + " at generation " + gen + "\n");
 				bestScore = fitn;
 			    bestAgent = (Agent) ea.getBests()[0];
 			}
 			//create next generation
 			ea.nextGeneration();
+			
+			System.out.println("best agent: " + ea.getBests()[0]);
+			System.out.println("best fitness: " + ea.getBestFitnesses()[0]);
 		}
 		// log name
 		logName = outputDir + "/" + timeStamp + "_" + agent.getBehavior() + "_LD_" + levelDificulty + "_SCORE_" + bestScore + "_log.txt";
@@ -248,7 +257,7 @@ public class SNSLearningAgent implements LearningAgent
 		// save best agent
 		if(bestAgent != null)
 		{
-			((SNSAgent)bestAgent).saveDna(timeStamp);
+			((SNSAgent)bestAgent).saveDna(timeStamp, outputDir);
 		}
 	}
 	
@@ -293,10 +302,16 @@ public class SNSLearningAgent implements LearningAgent
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(fileName, true));
 			int size = ea.meanScore.size();
-			out.write("mean; min; max;\n");
-			for(int i = 0; i < size; i++)
-				out.write(String.format("%f; %f; %f;\n", ea.meanScore.get(i), ea.minScore.get(i), ea.maxScore.get(i)));
+			out.write("gen; mean; min; max;\n");
+			
+			for(int i = 0; i < size; i++) {
+				out.write(String.format(
+					"%d; %f; %f; %f;\n", i+1, 
+					ea.meanScore.get(i), ea.minScore.get(i), ea.maxScore.get(i)
+				));
+			}
 			out.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -325,6 +340,10 @@ public class SNSLearningAgent implements LearningAgent
 	public int getMaxGenerations()
 	{
 		return generations;
+	}
+	
+	public EA getEvolutionaryAlgorithm(){
+		return ea;
 	}
 
 	@Override

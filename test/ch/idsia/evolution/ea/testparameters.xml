@@ -9,6 +9,7 @@
 		<elitism value="5" />
 		<repetitions value="30" />
 		<basedir value="testparams" />
+		<marioseed value="50" />
 	</parameters>
 	
 	<agents>

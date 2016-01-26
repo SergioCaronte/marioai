@@ -7,8 +7,9 @@
 		<crossover-prob value=".90" />
 		<mutation-prob value=".30" />
 		<difficulty value="1" />
-		<repetitions value="2" />
+		<repetitions value="10" />
 		<basedir value="test" />
+		<marioseed value="1" />
 	</parameters>
 	
 	<agents>
