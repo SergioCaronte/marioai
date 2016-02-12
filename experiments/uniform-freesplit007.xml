@@ -1,0 +1,19 @@
+<!-- departed from uniform-freesplit002 -->
+<experiment>
+	<parameters>
+		<generations value="10000" />
+		<pop-size value="100" />
+		<tournament-size value="2" />
+		<crossover-prob value=".90" />
+		<mutation-prob value=".10" />
+		<difficulty value="1" />
+		<repetitions value="30" />
+		<basedir value="uniform-freesplit007" />
+		<elitism value="5" />
+	</parameters>
+	
+	<agents>
+		<agent type="UniformProb" crossover="freeSplitCross" selection="tournamentWithElitism" />
+	</agents>
+	
+</experiment>
